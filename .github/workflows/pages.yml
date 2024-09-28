@@ -9,7 +9,8 @@ name: Deploy Jekyll site to Pages
 on:
   push:
     branches:
-      - "main"
+      - never # Disable this workflow in my fork.
+      # - "main"
     paths:
       - "aider/website/**"
 

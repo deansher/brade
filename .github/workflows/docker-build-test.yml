@@ -7,13 +7,15 @@ on:
       - README.md
       - HISTORY.md
     branches:
-      - main
+      - never # Disable this workflow in my fork.
+      # - main
   pull_request:
     paths-ignore:
       - 'aider/website/**'
       - README.md
     branches:
-      - main
+      - never # Disable this workflow in my fork.
+      # - main
 
 # copy most of these steps from release.yml, but push: false and no tags:
 

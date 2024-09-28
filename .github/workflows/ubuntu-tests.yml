@@ -7,13 +7,13 @@ on:
       - README.md
       - HISTORY.md
     branches:
-      - main
+      - brade
   pull_request:
     paths-ignore:
       - 'aider/website/**'
       - README.md
     branches:
-      - main
+      - brade
 
 jobs:
   build:
