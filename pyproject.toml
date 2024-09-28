@@ -4,8 +4,8 @@
 # [[[end]]]
 
 [project]
-name = "aider-chat"
-description = "Aider is AI pair programming in your terminal"
+name = "brade"
+description = "Brade is Aider with attitude."
 readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -24,10 +24,10 @@ requires-python = ">=3.9,<3.13"
 dynamic = ["dependencies", "optional-dependencies", "version"]
 
 [project.urls]
-Homepage = "https://github.com/paul-gauthier/aider"
+Homepage = "https://github.com/deansher/brade"
 
 [project.scripts]
-aider = "aider.main:main"
+brade = "brade.main:main"
 
 [tool.setuptools.dynamic]
 dependencies = { file = "requirements.txt" }

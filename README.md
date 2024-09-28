@@ -1,6 +1,13 @@
 
 <!-- Edit README.md, not index.md -->
 
+# Brade is deansher's personal fork of Aider.
+
+I intend to stay very close to the upstream project, but I want to make some changes to suit my needs.
+
+This project and the programming assistant that it implements are named after a young, smart, angry, 
+female villain in a young adult science fiction book series called Skyward, which are among my favorite books.
+
 # Aider is AI pair programming in your terminal
 
 Aider lets you pair program with LLMs,
