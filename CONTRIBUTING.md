@@ -1,9 +1,10 @@
 
 # Contributing to the Project
 
-We welcome contributions in the form of bug reports, feature requests,
-and pull requests (PRs). This document describes how you can
-contribute.
+Please consider submitting your PRs to the [Aider](https://github.com/paul-gauthier/aider)
+project instead of this one, because my goal is to stay as close to that project as possible.
+But if you want to propose a change to Brade-specific functionality in a way that still 
+minimizes divergence from the main project, then sure, I'll take a look.
 
 ## Bug Reports and Feature Requests
 
@@ -45,8 +46,8 @@ terms.
 ### Clone the Repository
 
 ```
-git clone https://github.com/paul-gauthier/aider.git
-cd aider
+git clone https://github.com/deansher/brade.git
+cd brade
 ```
 
 ### Create a Virtual Environment
@@ -114,15 +115,15 @@ pre-commit install
 
 This will automatically run the pre-commit hooks when you commit changes to the repository.
 
-Now you should have a fully functional development environment for the Aider project. You can start making changes, running tests, and contributing to the project.
+Now you should have a fully functional development environment for the Brade project. You can start making changes, running tests, and contributing to the project.
 
 ### Handy Opinionated Setup Commands for MacOS / Linux
 
 Here's an example of following the setup instructions above, for your copy/paste pleasure if your system works the same. Start in the project directory.
 
 ```
-python3 -m venv ../aider_venv \
- && source ../aider_venv/bin/activate \
+python3 -m venv ../brade_venv \
+ && source ../brade_venv/bin/activate \
  && pip3 install -e . \
  && pip3 install -r requirements.txt \
  && pip3 install -r requirements/requirements-dev.txt
@@ -137,7 +138,7 @@ Just run `pytest`.
 The project includes a `Dockerfile` for building a Docker image. You can build the image by running:
 
 ```
-docker build -t aider -f docker/Dockerfile .
+docker build -t brade -f docker/Dockerfile .
 ```
 
 ### Building the Documentation
@@ -165,7 +166,7 @@ The built documentation will be available in the `aider/website/_site` directory
 
 ### Python Compatibility
 
-Aider supports Python versions 3.9, 3.10, 3.11, and 3.12. When contributing code, ensure compatibility with these supported Python versions.
+Brade supports Python versions 3.9, 3.10, 3.11, and 3.12. When contributing code, ensure compatibility with these supported Python versions.
 
 ### Code Style
 
