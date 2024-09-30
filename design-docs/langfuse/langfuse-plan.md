@@ -86,17 +86,17 @@ We will start by adding tracing to the `send_completion` function in `aider/send
 
 We will use the `@observe()` decorator from Langfuse, specifying `as_type="generation"` to capture LLM generations.
 
-## ( ) Implement Tracing in `send_completion` Function
+## (✅) Implement Tracing in `send_completion` Function
 
-- ( ) Import Langfuse decorators in `aider/sendchat.py`.
-- ( ) Decorate the `send_completion` function with `@observe(as_type="generation")`.
-- ( ) Update the function to capture inputs and outputs.
+- (✅) Import Langfuse decorators in `aider/sendchat.py`.
+- (✅) Decorate the `send_completion` function with `@observe(as_type="generation")`.
+- (✅) Update the function to capture inputs and outputs.
 
 ### Implementation Details
 
 1. **Import Langfuse Decorators**
 
-   Add the following import at the top of `aider/sendchat.py`:
+   Added the following import at the top of `aider/sendchat.py`:
 
    ```python
    from langfuse.decorators import observe, langfuse_context
@@ -104,7 +104,7 @@ We will use the `@observe()` decorator from Langfuse, specifying `as_type="gener
 
 2. **Decorate `send_completion` Function**
 
-   Decorate the `send_completion` function:
+   Decorated the `send_completion` function:
 
    ```python
    @observe(as_type="generation")
@@ -121,7 +121,7 @@ We will use the `@observe()` decorator from Langfuse, specifying `as_type="gener
 
 3. **Capture Inputs and Outputs**
 
-   Within the function, update the tracing context to capture relevant information:
+   Within the function, updated the tracing context to capture relevant information:
 
    ```python
    # Before calling litellm.completion
@@ -150,32 +150,99 @@ We will use the `@observe()` decorator from Langfuse, specifying `as_type="gener
    )
    ```
 
-## ( ) Configure Langfuse Client
+## ( ) Configure Langfuse Client Using Existing `.env` Loading Mechanism
 
-- ( ) Set up Langfuse API keys.
-- ( ) Initialize the Langfuse client in the application.
-- ( ) Configure client settings as needed.
+- ( ) Ensure Langfuse API keys are included in the `.env` file.
+- ( ) Update the sample `.env` file to include Langfuse configuration fields.
+- ( ) Verify that the existing `.env` loading mechanism loads these variables properly.
+- ( ) Initialize the Langfuse client in the application using the loaded environment variables.
 
 ### Implementation Details
 
-1. **Set Environment Variables**
+1. **Update Sample `.env` File**
 
-   Ensure that the Langfuse API keys are set in the environment:
+   Update the sample `.env` file (`aider/website/assets/sample.env`) to include the Langfuse configuration variables, so users know to set them:
 
-   ```bash
-   export LANGFUSE_PUBLIC_KEY="<your_public_key>"
-   export LANGFUSE_SECRET_KEY="<your_secret_key>"
-   export LANGFUSE_HOST="https://cloud.langfuse.com"  # Adjust if necessary
+   ```ini
+   ##########################################################
+   # Sample aider .env file.
+   # Place at the root of your git repo.
+   # Or use `aider --env <fname>` to specify.
+   ##########################################################
+
+   # ... existing content ...
+
+   #################
+   # Langfuse Configuration:
+
+   ## Langfuse API Public Key
+   #LANGFUSE_PUBLIC_KEY=
+
+   ## Langfuse API Secret Key
+   #LANGFUSE_SECRET_KEY=
+
+   ## Langfuse Host URL (default: https://cloud.langfuse.com)
+   #LANGFUSE_HOST=https://cloud.langfuse.com
+
+   # ... rest of content ...
    ```
 
-2. **Initialize Langfuse Client**
+2. **Verify Existing `.env` Loading Mechanism**
 
-   In the main entry point of the application (e.g., `aider/main.py`), configure the Langfuse client:
+   The project already has a mechanism to load environment variables from `.env` files. In `aider/main.py`, the function `load_dotenv_files` handles this:
+
+   ```python
+   def load_dotenv_files(git_root, dotenv_fname, encoding="utf-8"):
+       dotenv_files = generate_search_path_list(
+           ".env",
+           git_root,
+           dotenv_fname,
+       )
+       loaded = []
+       for fname in dotenv_files:
+           try:
+               if Path(fname).exists():
+                   load_dotenv(fname, override=True, encoding=encoding)
+                   loaded.append(fname)
+           except OSError as e:
+               print(f"OSError loading {fname}: {e}")
+           except Exception as e:
+               print(f"Error loading {fname}: {e}")
+       return loaded
+   ```
+
+   Since this mechanism loads environment variables before the main application runs, Langfuse can access its configuration via `os.environ`.
+
+3. **Initialize Langfuse Client Using Environment Variables**
+
+   In the main entry point of the application (`aider/main.py`), after the environment variables have been loaded, we will initialize the Langfuse client.
+
+   **In `aider/main.py`:**
+
+   Add the following import at the top of the file:
 
    ```python
    from langfuse.decorators import langfuse_context
-
-   langfuse_context.configure(
-       # Optional configuration
-   )
    ```
+
+   Then, after loading the environment variables (i.e., after calling `load_dotenv_files`), configure the Langfuse context:
+
+   ```python
+   # Existing code...
+
+   # Load environment variables
+   loaded_dotenvs = load_dotenv_files(git_root, args.env_file, args.encoding)
+
+   # Configure Langfuse context using environment variables
+   langfuse_context.configure()
+
+   # Rest of the code...
+   ```
+
+   The `langfuse_context.configure()` method will automatically read the necessary configuration from the environment variables.
+
+4. **Ensure Langfuse Initialization Happens at the Correct Place**
+
+   Make sure that the Langfuse context is configured after the environment variables are loaded but before any LLM interactions occur. This ensures that the
+tracing is properly initialized and captures all LLM interactions.
+
