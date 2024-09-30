@@ -5,6 +5,7 @@ import backoff
 
 from aider.dump import dump  # noqa: F401
 from aider.llm import litellm
+from langfuse.decorators import observe, langfuse_context
 
 # from diskcache import Cache
 
@@ -46,6 +47,7 @@ def lazy_litellm_retry_decorator(func):
     return wrapper
 
 
+@observe(as_type="generation")
 def send_completion(
     model_name,
     messages,
@@ -80,7 +82,29 @@ def send_completion(
     if not stream and CACHE is not None and key in CACHE:
         return hash_object, CACHE[key]
 
+    # Update Langfuse tracing context before LLM call
+    langfuse_context.update_current_observation(
+        input={
+            'model_name': model_name,
+            'messages': messages,
+            'functions': functions,
+            'stream': stream,
+            'temperature': temperature,
+            'extra_params': extra_params,
+        },
+        model=model_name,
+    )
+
     res = litellm.completion(**kwargs)
+
+    # Update Langfuse tracing context after LLM call
+    langfuse_context.update_current_observation(
+        output=res.choices,
+        usage={
+            'input': res.usage.prompt_tokens,
+            'output': res.usage.completion_tokens,
+        },
+    )
 
     if not stream and CACHE is not None:
         CACHE[key] = res
