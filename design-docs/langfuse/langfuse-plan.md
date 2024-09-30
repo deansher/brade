@@ -152,12 +152,11 @@ We will use the `@observe()` decorator from Langfuse, specifying `as_type="gener
    )
    ```
 
-## ( ) Configure Langfuse Client Using Existing `.env` Loading Mechanism
+## (✅) Configure Langfuse Client Using Existing `.env` Loading Mechanism
 
-- ( ) Ensure Langfuse API keys are included in the `.env` file.
-- ( ) Update the sample `.env` file to include Langfuse configuration fields.
-- ( ) Verify that the existing `.env` loading mechanism loads these variables properly.
-- ( ) Initialize the Langfuse client in the application using the loaded environment variables.
+- (✅) Update the sample `.env` file to include Langfuse configuration fields.
+- (✅) Verify that the existing `.env` loading mechanism loads these variables properly.
+- (✅) Initialize the Langfuse client in the application using the loaded environment variables.
 
 ### Implementation Details
 
