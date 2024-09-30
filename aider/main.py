@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from prompt_toolkit.enums import EditingMode
 from langfuse.decorators import langfuse_context, observe
 
+from langfuse.decorators import langfuse_context, observe
 from aider import __version__, models, utils
 from aider.args import get_parser
 from aider.coders import Coder
