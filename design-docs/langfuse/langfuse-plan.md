@@ -14,6 +14,8 @@ This document contains three kinds of material:
 - specific plans for meeting those requirements
 - our findings as we analyze our code along the way
 
+We only intend for this plan to cover straightforward next steps to our next demonstrable milestone. We'll extend it as we go.
+
 We write down our findings as we go, to build up context for later tasks. When a task requires analysis, we use the section header as the task and write down our
 findings as that section's content.
 
