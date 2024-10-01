@@ -18,13 +18,13 @@ Reply with one line only!
 
 # COMMANDS
 undo_command_reply = (
-    "I did `git reset --hard HEAD~1` to discard the last edits. Please wait for further"
+    "<SYSTEM> Your partner did `git reset --hard HEAD~1` to discard the last edits. Please wait for further"
     " instructions before attempting that change again. Feel free to ask relevant questions about"
     " why the changes were reverted."
 )
 
 added_files = (
-    "I added these files to the chat: {fnames}\nLet me know if there are others we should add."
+    "<SYSTEM> Your partner added these files to the chat: {fnames}\nLet them know if you need additional files."
 )
 
 

@@ -1,6 +1,7 @@
 import importlib
 import os
 import warnings
+from langfuse.decorators import langfuse_context
 
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
@@ -36,5 +37,10 @@ class LazyLiteLLM:
 
 
 litellm = LazyLiteLLM()
+
+# Configure Langfuse client
+langfuse_context.configure(
+    # Optional configuration
+)
 
 __all__ = [litellm]

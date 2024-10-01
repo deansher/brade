@@ -15,6 +15,7 @@ annotated-types==0.7.0
 anyio==4.6.0
     # via
     #   httpx
+    #   langfuse
     #   openai
 attrs==24.2.0
     # via
@@ -22,7 +23,9 @@ attrs==24.2.0
     #   jsonschema
     #   referencing
 backoff==2.2.1
-    # via -r requirements/requirements.in
+    # via
+    #   -r requirements/requirements.in
+    #   langfuse
 beautifulsoup4==4.12.3
     # via -r requirements/requirements.in
 certifi==2024.8.30
@@ -67,13 +70,16 @@ h11==0.14.0
 httpcore==1.0.5
     # via httpx
 httpx==0.27.2
-    # via openai
+    # via
+    #   langfuse
+    #   openai
 huggingface-hub==0.25.0
     # via tokenizers
 idna==3.10
     # via
     #   anyio
     #   httpx
+    #   langfuse
     #   requests
     #   yarl
 importlib-metadata==7.2.1
@@ -94,6 +100,8 @@ jsonschema==4.23.0
     #   litellm
 jsonschema-specifications==2023.12.1
     # via jsonschema
+langfuse==2.51.2
+    # via -r requirements/requirements.in
 litellm==1.47.0
     # via -r requirements/requirements.in
 markdown-it-py==3.0.0
@@ -120,6 +128,7 @@ packaging==24.1
     # via
     #   -r requirements/requirements.in
     #   huggingface-hub
+    #   langfuse
 pathspec==0.12.1
     # via
     #   -r requirements/requirements.in
@@ -140,6 +149,7 @@ pycparser==2.22
     # via cffi
 pydantic==2.9.2
     # via
+    #   langfuse
     #   litellm
     #   openai
 pydantic-core==2.23.4
@@ -218,6 +228,8 @@ urllib3==2.2.3
     # via requests
 wcwidth==0.2.13
     # via prompt-toolkit
+wrapt==1.16.0
+    # via langfuse
 yarl==1.11.1
     # via aiohttp
 zipp==3.20.2
