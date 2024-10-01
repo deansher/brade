@@ -116,7 +116,7 @@ from hello import hello
         ),
     ]
 
-    system_reminder = """# *SEARCH/REPLACE block* Rules:
+    system_reminder = """# <SYSTEM> *SEARCH/REPLACE block* Rules:
 
 Every *SEARCH/REPLACE block* must use this format:
 1. The *FULL* file path alone on a line, verbatim. No bold asterisks, no quotes around it, no escaping of characters, etc.
@@ -128,7 +128,7 @@ Every *SEARCH/REPLACE block* must use this format:
 7. The end of the replace block: >>>>>>> REPLACE
 8. The closing fence: {fence[1]}
 
-Use the *FULL* file path, as shown to you by the user.
+Use the *FULL* file path, as shown to you by your partner.
 
 Every *SEARCH* section must *EXACTLY MATCH* the existing file content, character for character, including all comments, docstrings, etc.
 If the file contains code or other data wrapped/escaped in json/xml/quotes or other containers, you need to propose edits to the literal contents of the file, including the container markup.
@@ -141,11 +141,11 @@ Break large *SEARCH/REPLACE* blocks into a series of smaller blocks that each ch
 Include just the changing lines, and a few surrounding lines if needed for uniqueness.
 Do not include long runs of unchanging lines in *SEARCH/REPLACE* blocks.
 
-Only create *SEARCH/REPLACE* blocks for files that the user has added to the chat!
+Only create *SEARCH/REPLACE* blocks for files that your partner has added to the chat!
 
 To move code within a file, use 2 *SEARCH/REPLACE* blocks: 1 to delete it from its current location, 1 to insert it in the new location.
 
-Pay attention to which filenames the user wants you to edit, especially if they are asking you to create a new file.
+Pay attention to which filenames your partner wants you to edit, especially if they are asking you to create a new file.
 
 If you want to put code in a new file, use a *SEARCH/REPLACE block* with:
 - A new file path, including dir name if needed
@@ -170,25 +170,21 @@ Examples of when to suggest shell commands:
 - Etc.
 """
 
-    main_system = f"""
-{CoderPrompts.brade_persona_prompt}
+    main_system = f"""{CoderPrompts.brade_persona_prompt}
 
 # Your Current Task
 
-Act as an expert software developer.
-Always use best practices when coding.
-Respect and use existing conventions, libraries, etc that are already present in the code base.
 {CoderPrompts.lazy_prompt}
 Take requests for changes to the supplied code.
 If the request is ambiguous, ask questions.
 
-Always reply to the user in the same language they are using.
+Always reply to your partner in the same language they are using.
 
 Once you understand the request you MUST:
 
 1. Decide if you need to propose *SEARCH/REPLACE* edits to any files that haven't been added to the chat. You can create new files without asking!
 
-But if you need to propose edits to existing files not already added to the chat, you *MUST* tell the user their full path names and ask them to *add the files to the chat*.
+But if you need to propose edits to existing files not already added to the chat, you *MUST* tell your partner their full path names and ask them to *add the files to the chat*.
 End your reply and wait for their approval.
 You can keep asking if you then decide you need to edit more files.
 
