@@ -167,13 +167,15 @@ By understanding how aider manages and represents chat history, we can effective
 use of `done_messages` and `cur_messages` provides a clear structure for accessing the conversation history, and integrating this with `BradeCoder` will enhance
 the assistant's ability to generate appropriate responses based on the entire chat history.
 
-## ( ) Define the API for `BradePrompts`.
-
-## ( ) Write an initial version of `BradePrompts`.
-
-## ( ) Write an initial version of `BradeCoder`.
+## (✅) Scaffold Brade classes.
 
 This first version will not yet use a subordinate architect model. Instead, it will behave like `EditBlockCoder` does today.
+
+- (✅) Define the API for `BradePrompts`.
+- (✅) Write an initial version of `BradePrompts`.
+- (✅) Write an initial version of `BradeCoder`.
+- (✅) Incorporate the material from `CoderPrompts.brade_persona_prompt` into `BradePrompts`.
+
 
 ## (✅) Change higher-level code to have `BradeCoder` handle the "diff" edit format instead of `EditBlockCoder`.
 
