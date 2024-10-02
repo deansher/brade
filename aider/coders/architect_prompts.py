@@ -4,7 +4,7 @@ from .base_prompts import CoderPrompts
 
 
 class ArchitectPrompts(CoderPrompts):
-    main_system = """{CoderPrompts.brade_persona_prompt}
+    main_system = f"""{CoderPrompts.brade_persona_prompt}
 
 # Your Current Task
 

@@ -10,7 +10,7 @@ class ArchitectCoder(AskCoder):
     def reply_completed(self):
         content = self.partial_response_content
 
-        if not self.io.confirm_ask("Edit the files?"):
+        if not self.io.confirm_ask('Should I edit files now? (Respond "No" to continue the conversation instead.)'):
             return
 
         kwargs = dict()
