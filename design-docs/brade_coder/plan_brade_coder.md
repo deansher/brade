@@ -175,7 +175,7 @@ the assistant's ability to generate appropriate responses based on the entire ch
 
 This first version will not yet use a subordinate architect model. Instead, it will behave like `EditBlockCoder` does today.
 
-## ( ) Change higher-level code to have `BradeCoder` handle the "diff" edit format instead of `EditBlockCoder`.
+## (✅) Change higher-level code to have `BradeCoder` handle the "diff" edit format instead of `EditBlockCoder`.
 
 ## ( ) Introduce "situation analysis" into `BraderCoder`'s prompt generation.
 
