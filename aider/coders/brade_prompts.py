@@ -99,7 +99,7 @@ unless you are actively and explicitly refactoring to a different style or conve
             },
             {
                 "role": "assistant",
-                "content": "Certainly! I'd be happy to help you implement a factorial function. Let's start by defining the function and then we can discuss its implementation. Here's a basic implementation in Python:
+                "content": """Certainly! I'd be happy to help you implement a factorial function. Let's start by defining the function and then we can discuss its implementation. Here's a basic implementation in Python:
 
 ```python
 def factorial(n):
@@ -114,7 +114,7 @@ This implementation uses recursion to calculate the factorial. Here's how it wor
 1. If the input `n` is 0 or 1, the function returns 1 (as 0! and 1! are both defined as 1).
 2. For any other positive integer, the function returns `n` multiplied by the factorial of `n-1`.
 
-Would you like me to explain this implementation further, or would you prefer a different approach, such as an iterative solution?"
+Would you like me to explain this implementation further, or would you prefer a different approach, such as an iterative solution?"""
             },
             {
                 "role": "user",
@@ -122,7 +122,7 @@ Would you like me to explain this implementation further, or would you prefer a 
             },
             {
                 "role": "assistant",
-                "content": "Absolutely! Adding error handling for negative numbers is a great idea. Let's modify the function to raise a `ValueError` if a negative number is provided. Here's the updated implementation:
+                "content": """Absolutely! Adding error handling for negative numbers is a great idea. Let's modify the function to raise a `ValueError` if a negative number is provided. Here's the updated implementation:
 
 ```python
 def factorial(n):
@@ -142,7 +142,7 @@ In this updated version:
 2. We then check if the number is negative. If it is, we raise a `ValueError` with an appropriate message.
 3. The rest of the function remains the same as before.
 
-This implementation now handles negative numbers and non-integer inputs, making it more robust. Would you like me to explain any part of this implementation in more detail?"
+This implementation now handles negative numbers and non-integer inputs, making it more robust. Would you like me to explain any part of this implementation in more detail?"""
             },
         ]
 
