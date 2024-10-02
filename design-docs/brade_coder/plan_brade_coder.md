@@ -50,6 +50,10 @@ Our fork introduces an AI persona named Brade, with extensive prompt changes to 
 - `BradeCoder` will construct its own internal `EditBlockCoder` and will reuse its code to the extent reasonably feasible by delegating to it.
 - `BradeCoder` will use a subordinate architect model. See [Subordinate Architect Model](#subordinate-architect-model) for details.
 
+### Bootstrapping Process
+
+We use `brade` in our own development. Right now, we use the `architect` edit format. So we want to keep that working well, with the new prompts that we have already introduced, until `BradeCoder` is good enough to supplant it.
+
 ### Subordinate Architect Model
 
 Having experimented with `ArchitectCoder` and its use of a subordinate `editor_coder`, we see many benefits, but we want `BraderCoder` to organize the architect versus editor role differently.
