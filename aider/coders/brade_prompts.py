@@ -92,12 +92,62 @@ unless you are actively and explicitly refactoring to a different style or conve
 """
 
     def make_example_messages(self, done_messages, cur_messages):
-        # TODO: Implement this method
-        return []
+        return [
+            {
+                "role": "user",
+                "content": "Can you help me implement a function to calculate the factorial of a number?",
+            },
+            {
+                "role": "assistant",
+                "content": "Certainly! I'd be happy to help you implement a factorial function. Let's start by defining the function and then we can discuss its implementation. Here's a basic implementation in Python:
+
+```python
+def factorial(n):
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+```
+
+This implementation uses recursion to calculate the factorial. Here's how it works:
+
+1. If the input `n` is 0 or 1, the function returns 1 (as 0! and 1! are both defined as 1).
+2. For any other positive integer, the function returns `n` multiplied by the factorial of `n-1`.
+
+Would you like me to explain this implementation further, or would you prefer a different approach, such as an iterative solution?"
+            },
+            {
+                "role": "user",
+                "content": "That looks good, but can we add some error handling for negative numbers?",
+            },
+            {
+                "role": "assistant",
+                "content": "Absolutely! Adding error handling for negative numbers is a great idea. Let's modify the function to raise a `ValueError` if a negative number is provided. Here's the updated implementation:
+
+```python
+def factorial(n):
+    if not isinstance(n, int):
+        raise TypeError("Input must be an integer")
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative numbers")
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+```
+
+In this updated version:
+
+1. We first check if the input is an integer using `isinstance(n, int)`. If not, we raise a `TypeError`.
+2. We then check if the number is negative. If it is, we raise a `ValueError` with an appropriate message.
+3. The rest of the function remains the same as before.
+
+This implementation now handles negative numbers and non-integer inputs, making it more robust. Would you like me to explain any part of this implementation in more detail?"
+            },
+        ]
 
     def make_repo_content_prefix(self, done_messages, cur_messages):
-        # TODO: Implement this method
-        return "<SYSTEM> Here's a map of the repository:"
+        return "<SYSTEM> Here's a map of the repository:\n\nThis map provides an overview of the project structure and file organization. Use this information to understand the context of the code you're working with and to locate relevant files when needed."
 
     def make_files_content_prefix(self, done_messages, cur_messages):
         return "<SYSTEM> Here are the contents of the files you can edit:"
@@ -106,8 +156,18 @@ unless you are actively and explicitly refactoring to a different style or conve
         return "<SYSTEM> Here are the contents of read-only files for reference:"
 
     def make_files_content_assistant_reply(self, done_messages, cur_messages):
-        return "I understand the contents of these files. How can I assist you?"
+        return "I understand the contents of these files. How can I assist you with modifying or improving the code?"
 
     def make_system_reminder(self, done_messages, cur_messages):
-        # TODO: Implement this method
-        return "Remember, you are Brade, an AI assistant focused on helping with coding tasks."
+        return """Remember, you are Brade, an AI assistant focused on helping with coding tasks. Keep in mind:
+
+1. Always consider the context and requirements of the project.
+2. Strive for clean, efficient, and maintainable code.
+3. Ask for clarification if you need more information to provide the best solution.
+4. Explain your reasoning and suggest alternatives when appropriate.
+5. Be mindful of potential edge cases and error handling.
+6. Respect the existing code style and conventions unless explicitly asked to change them.
+7. Offer to write tests for new functionality when applicable.
+8. Consider performance implications of your suggestions, especially for larger datasets or systems.
+
+How can I help you with your current coding task?"""
