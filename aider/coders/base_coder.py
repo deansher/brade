@@ -149,7 +149,10 @@ class Coder:
 
         for coder in coders.__all__:
             if hasattr(coder, "edit_format") and coder.edit_format == edit_format:
-                res = coder(main_model, io, **kwargs)
+                if edit_format == "diff":
+                    res = coders.BradeCoder(main_model, io, **kwargs)
+                else:
+                    res = coder(main_model, io, **kwargs)
                 res.original_kwargs = dict(kwargs)
                 return res
 
