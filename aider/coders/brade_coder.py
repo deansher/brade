@@ -1,6 +1,6 @@
 from aider.coders.editblock_coder import EditBlockCoder
 from aider.coders.brade_prompts import BradePrompts
-from aider.coders.chat_sit_rep import ChatSitRep
+from aider.coders.chat_sitrep import ChatSitrep
 
 
 class BradeCoder(EditBlockCoder):
@@ -10,26 +10,26 @@ class BradeCoder(EditBlockCoder):
         self.brade_prompts = BradePrompts()
 
     def fmt_system_prompt(self, prompt):
-        chat_sit_rep = ChatSitRep()
-        return self.brade_prompts.make_main_system_prompt(chat_sit_rep)
+        sitrep = ChatSitrep()
+        return self.brade_prompts.make_main_system_prompt(sitrep)
 
     def format_chat_chunks(self):
-        chat_sit_rep = ChatSitRep()
+        sitrep = ChatSitrep()
         chunks = super().format_chat_chunks()
-        chunks.examples = self.brade_prompts.make_example_messages(chat_sit_rep)
+        chunks.examples = self.brade_prompts.make_example_messages(sitrep)
         chunks.repo = [
-            dict(role="user", content=self.brade_prompts.make_repo_content_prefix(chat_sit_rep) + self.get_repo_map()),
+            dict(role="user", content=self.brade_prompts.make_repo_content_prefix(sitrep) + self.get_repo_map()),
             dict(role="assistant", content="Understood. I'll keep this repository structure in mind."),
         ]
         chunks.chat_files = [
-            dict(role="user", content=self.brade_prompts.make_files_content_prefix(chat_sit_rep) + self.get_files_content()),
-            dict(role="assistant", content=self.brade_prompts.make_files_content_assistant_reply(chat_sit_rep)),
+            dict(role="user", content=self.brade_prompts.make_files_content_prefix(sitrep) + self.get_files_content()),
+            dict(role="assistant", content=self.brade_prompts.make_files_content_assistant_reply(sitrep)),
         ]
         chunks.readonly_files = [
-            dict(role="user", content=self.brade_prompts.make_read_only_files_prefix(chat_sit_rep) + self.get_read_only_files_content()),
+            dict(role="user", content=self.brade_prompts.make_read_only_files_prefix(sitrep) + self.get_read_only_files_content()),
             dict(role="assistant", content="I'll use these read-only files as reference."),
         ]
         chunks.reminder = [
-            dict(role="system", content=self.brade_prompts.make_system_reminder(chat_sit_rep)),
+            dict(role="system", content=self.brade_prompts.make_system_reminder(sitrep)),
         ]
         return chunks
