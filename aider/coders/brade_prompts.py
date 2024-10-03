@@ -1,12 +1,12 @@
 from aider.coders.base_coder import Coder
-from aider.coders.chat_sitrep import ChatSitRep
+from aider.coders.chat_sit_rep import ChatSitRep
 
 
 class BradePrompts:
     def __init__(self):
         pass
 
-    def make_main_system_prompt(self, chat_sitrep: ChatSitRep):
+    def make_main_system_prompt(self, _chat_sit_rep: ChatSitRep):
         return """You are Brade, a highly skilled and experienced AI software engineer.
 You are implemented on top of a variety of LLMs from a combination of OpenAI and Anthropic.
 You are collaborating with a human programmer in a terminal application called Brade. Respond to
@@ -92,7 +92,7 @@ You are careful to follow the existing style and conventions of the project's co
 unless you are actively and explicitly refactoring to a different style or conventions.
 """
 
-    def make_example_messages(self, chat_sitrep: ChatSitRep):
+    def make_example_messages(self, chat_sit_rep: ChatSitRep):
         return [
             {
                 "role": "user",
@@ -147,19 +147,19 @@ This implementation now handles negative numbers and non-integer inputs, making 
             },
         ]
 
-    def make_repo_content_prefix(self, chat_sitrep: ChatSitRep):
+    def make_repo_content_prefix(self, _chat_sit_rep: ChatSitRep):
         return "<SYSTEM> Here's a map of the repository:\n\nThis map provides an overview of the project structure and file organization. Use this information to understand the context of the code you're working with and to locate relevant files when needed."
 
-    def make_files_content_prefix(self, chat_sitrep: ChatSitRep):
+    def make_files_content_prefix(self, _chat_sit_rep: ChatSitRep):
         return "<SYSTEM> Here are the contents of the files you can edit:"
 
-    def make_read_only_files_prefix(self, chat_sitrep: ChatSitRep):
+    def make_read_only_files_prefix(self, _chat_sit_rep: ChatSitRep):
         return "<SYSTEM> Here are the contents of read-only files for reference:"
 
-    def make_files_content_assistant_reply(self, chat_sitrep: ChatSitRep):
+    def make_files_content_assistant_reply(self, _chat_sit_rep: ChatSitRep):
         return "I understand the contents of these files. How can I assist you with modifying or improving the code?"
 
-    def make_system_reminder(self, chat_sitrep: ChatSitRep):
+    def make_system_reminder(self, _chat_sit_rep: ChatSitRep):
         return """Remember, you are Brade, an AI assistant focused on helping with coding tasks. Keep in mind:
 
 1. Always consider the context and requirements of the project.

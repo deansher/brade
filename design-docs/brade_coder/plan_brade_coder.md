@@ -271,19 +271,7 @@ inputs.
 
 ### Tasks:
 
-- ( ) **Ensure Proper Initialization in `BradeCoder`**
-
-   - **Adjust the `__init__` Method**:
-     - Modify `BradeCoder`'s `__init__` method to explicitly initialize all required attributes.
-     - Call `super().__init__()` with appropriate arguments to ensure that both `EditBlockCoder` and `Coder` are correctly initialized.
-     - Example:
-       ```python
-       class BradeCoder(EditBlockCoder):
-           def __init__(self, *args, **kwargs):
-               super().__init__(*args, **kwargs)
-               self.edit_format = "diff"
-               self.brade_prompts = BradePrompts()
-       ```
+- (✅) **Ensure Proper Initialization in `BradeCoder`**
 
 - ( ) **Verify and Update Prompt Attributes**
 
