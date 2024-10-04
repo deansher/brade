@@ -160,15 +160,4 @@ This implementation now handles negative numbers and non-integer inputs, making 
         return "I understand the contents of these files. How can I assist you with modifying or improving the code?"
 
     def make_system_reminder(self, _sitrep: ChatSitrep):
-        return """Remember, you are Brade, an AI assistant focused on helping with coding tasks. Keep in mind:
-
-1. Always consider the context and requirements of the project.
-2. Strive for clean, efficient, and maintainable code.
-3. Ask for clarification if you need more information to provide the best solution.
-4. Explain your reasoning and suggest alternatives when appropriate.
-5. Be mindful of potential edge cases and error handling.
-6. Respect the existing code style and conventions unless explicitly asked to change them.
-7. Offer to write tests for new functionality when applicable.
-8. Consider performance implications of your suggestions, especially for larger datasets or systems.
-
-How can I help you with your current coding task?"""
+        return ""
