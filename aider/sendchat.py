@@ -56,6 +56,35 @@ def send_completion(
     temperature=0,
     extra_params=None,
 ):
+    """
+    Send a completion request to the language model and handle the response.
+
+    This function sends a request to the specified language model, processes the response,
+    and updates Langfuse tracing context. It supports both streaming and non-streaming responses.
+
+    Args:
+        model_name (str): The name of the language model to use.
+        messages (list): A list of message dictionaries to send to the model.
+        functions (list): A list of function definitions that the model can use.
+        stream (bool): Whether to stream the response or not.
+        temperature (float, optional): The sampling temperature to use. Defaults to 0.
+        extra_params (dict, optional): Additional parameters to pass to the model. Defaults to None.
+
+    Returns:
+        tuple: A tuple containing:
+            - hash_object (hashlib.sha1): A SHA1 hash object of the request parameters.
+            - res (litellm.ModelResponse): The model's response object.
+
+    Raises:
+        AttributeError: If the response structure is unexpected.
+        Exception: For any other unexpected errors during execution.
+
+    Notes:
+        - This function uses Langfuse for tracing and monitoring.
+        - It handles caching of responses when applicable.
+        - The function adapts its behavior based on whether streaming is enabled or not.
+        - It updates Langfuse tracing context before and after the LLM call.
+    """
     from aider.llm import litellm
 
     kwargs = dict(
