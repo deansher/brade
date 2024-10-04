@@ -273,38 +273,17 @@ inputs.
 
 - (✅) **Ensure Proper Initialization in `BradeCoder`**
 
-- ( ) **Verify and Update Prompt Attributes**
+- (✅) **Verify and Update Prompt Attributes**
 
+   - **Introduce a `ChatSitrep` class**:
+     - Captures the situation in the chat.
+     - For now, it is an empty class.
+     - Pass this as a parameter to all prompt generation methods instead of passing the chat history.
    - **Ensure All Prompts are Available in `BradePrompts`**:
      - Review `BradePrompts` to confirm it includes all necessary prompt attributes and methods that `EditBlockCoder` expects.
      - Add any missing prompts or methods to `BradePrompts`.
    - **Align Prompt Formats**:
      - Ensure that the output formats from `BradePrompts` match what `EditBlockCoder`'s methods expect, particularly in terms of parsing edits.
-
-- ( ) **Override Methods if Necessary**
-
-   - **Adjust `get_edits` Method**:
-     - If the assistant's response format has changed due to different prompts, override `get_edits` in `BradeCoder` to correctly parse edits.
-     - Ensure that it can handle any new response structures introduced by `BradePrompts`.
-   - **Adjust `apply_edits` Method**:
-     - If the method of applying edits needs customization, override `apply_edits` to accommodate any changes.
-
-- ( ) **Update Error Handling**
-
-   - **Customize Error Messages**:
-     - Modify error messages in `BradeCoder` to reflect `Brade`'s persona and communication style.
-     - Ensure that error feedback is clear, helpful, and consistent with the assistant's overall behavior.
-   - **Maintain Robustness**:
-     - Ensure that error handling gracefully manages unexpected situations without causing crashes or undefined behavior.
-
-- ( ) **Implement Comprehensive Testing**
-
-   - **Unit Tests**:
-     - Write unit tests specifically for `BradeCoder` to validate its methods and behaviors.
-     - Test scenarios including successful edits, parsing failures, and error handling.
-   - **Integration Tests**:
-     - Test `BradeCoder` within the larger application to ensure it interacts correctly with other components.
-     - Verify end-to-end functionality from user input to file modification.
 
 - ( ) **Prepare for Architect Model Integration**
 
