@@ -1,11 +1,14 @@
 import hashlib
 import json
+import logging
 
 import backoff
 
 from aider.dump import dump  # noqa: F401
 from aider.llm import litellm
 from langfuse.decorators import observe, langfuse_context
+
+logging.basicConfig(level=logging.WARNING)
 
 # from diskcache import Cache
 
@@ -161,7 +164,8 @@ def stream_with_langfuse(stream_iter, model_name):
     Notes:
         - This function aggregates the content and usage data from all chunks.
         - It updates the Langfuse context with the collected data after the stream is exhausted.
-        - If an exception occurs during streaming, it ensures that the Langfuse context is still updated.
+        - If an exception occurs during streaming, it logs the error and re-raises the exception.
+        - It logs unexpected chunk structures for debugging purposes.
     """
     output_content = ''
     total_completion_tokens = 0
@@ -175,6 +179,9 @@ def stream_with_langfuse(stream_iter, model_name):
                 hasattr(chunk.choices[0].delta, 'content') and
                 chunk.choices[0].delta.content):
                 output_content += chunk.choices[0].delta.content
+            else:
+                # Log unexpected chunk structure for debugging
+                logging.warning(f"Unexpected chunk structure: {chunk}")
 
             # Aggregate usage tokens if available
             if hasattr(chunk, 'usage') and chunk.usage:
@@ -183,6 +190,9 @@ def stream_with_langfuse(stream_iter, model_name):
                     prompt_tokens = getattr(chunk.usage, 'prompt_tokens', None)
 
             yield chunk
+    except Exception as e:
+        logging.error(f"Exception occurred during streaming: {e}")
+        raise
     finally:
         # After streaming is complete or if an exception occurs, update Langfuse tracing context
         langfuse_context.update_current_observation(
