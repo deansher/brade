@@ -126,19 +126,49 @@ def send_completion(
 
     res = litellm.completion(**kwargs)
 
-    # Update Langfuse tracing context after LLM call
+    if not stream:
+        # Non-streaming case
+        langfuse_context.update_current_observation(
+            output=res.choices,
+            usage={
+                'input': res.usage.prompt_tokens,
+                'output': res.usage.completion_tokens,
+            },
+        )
+        if CACHE is not None:
+            CACHE[key] = res
+        return hash_object, res
+    else:
+        # For streaming, wrap the iterator
+        return hash_object, stream_with_langfuse(res, model_name)
+
+def stream_with_langfuse(stream_iter, model_name):
+    output_content = ''
+    total_completion_tokens = 0
+    prompt_tokens = None
+
+    for chunk in stream_iter:
+        # Collect the content
+        if chunk.choices and chunk.choices[0].delta.content:
+            output_content += chunk.choices[0].delta.content
+
+        # Aggregate usage tokens if available
+        if hasattr(chunk, 'usage') and chunk.usage:
+            total_completion_tokens += chunk.usage.completion_tokens
+            if prompt_tokens is None:
+                prompt_tokens = chunk.usage.prompt_tokens
+
+        yield chunk
+
+    # After streaming is complete, update Langfuse tracing context
     langfuse_context.update_current_observation(
-        output=res.choices,
+        output=output_content,
         usage={
-            'input': res.usage.prompt_tokens,
-            'output': res.usage.completion_tokens,
+            'input': prompt_tokens,
+            'output': total_completion_tokens,
         },
+        model=model_name,
     )
-
-    if not stream and CACHE is not None:
-        CACHE[key] = res
-
-    return hash_object, res
 
 
 @lazy_litellm_retry_decorator
