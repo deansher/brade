@@ -73,7 +73,9 @@ def send_completion(
     Returns:
         tuple: A tuple containing:
             - hash_object (hashlib.sha1): A SHA1 hash object of the request parameters.
-            - res (litellm.ModelResponse): The model's response object.
+            - res (litellm.ModelResponse): The model's response object for non-streaming requests.
+            - iterator: For streaming requests, returns an iterator that should be consumed by the caller.
+              The Langfuse context will be updated after the iterator is exhausted.
 
     Raises:
         AttributeError: If the response structure is unexpected.
@@ -143,32 +145,54 @@ def send_completion(
         return hash_object, stream_with_langfuse(res, model_name)
 
 def stream_with_langfuse(stream_iter, model_name):
+    """
+    Wrap the streaming iterator to collect output content and usage data for Langfuse.
+
+    This function processes each chunk from the stream, collects the content and usage data,
+    and updates the Langfuse context after the stream is exhausted.
+
+    Args:
+        stream_iter (iterator): The original streaming iterator from the LLM.
+        model_name (str): The name of the model being used.
+
+    Yields:
+        dict: Each chunk from the original stream.
+
+    Notes:
+        - This function aggregates the content and usage data from all chunks.
+        - It updates the Langfuse context with the collected data after the stream is exhausted.
+        - If an exception occurs during streaming, it ensures that the Langfuse context is still updated.
+    """
     output_content = ''
     total_completion_tokens = 0
-    prompt_tokens = None
+    prompt_tokens = getattr(stream_iter, 'usage', {}).get('prompt_tokens')
 
-    for chunk in stream_iter:
-        # Collect the content
-        if chunk.choices and chunk.choices[0].delta.content:
-            output_content += chunk.choices[0].delta.content
+    try:
+        for chunk in stream_iter:
+            # Collect the content
+            if (hasattr(chunk, 'choices') and chunk.choices and
+                hasattr(chunk.choices[0], 'delta') and
+                hasattr(chunk.choices[0].delta, 'content') and
+                chunk.choices[0].delta.content):
+                output_content += chunk.choices[0].delta.content
 
-        # Aggregate usage tokens if available
-        if hasattr(chunk, 'usage') and chunk.usage:
-            total_completion_tokens += chunk.usage.completion_tokens
-            if prompt_tokens is None:
-                prompt_tokens = chunk.usage.prompt_tokens
+            # Aggregate usage tokens if available
+            if hasattr(chunk, 'usage') and chunk.usage:
+                total_completion_tokens += getattr(chunk.usage, 'completion_tokens', 0)
+                if prompt_tokens is None:
+                    prompt_tokens = getattr(chunk.usage, 'prompt_tokens', None)
 
-        yield chunk
-
-    # After streaming is complete, update Langfuse tracing context
-    langfuse_context.update_current_observation(
-        output=output_content,
-        usage={
-            'input': prompt_tokens,
-            'output': total_completion_tokens,
-        },
-        model=model_name,
-    )
+            yield chunk
+    finally:
+        # After streaming is complete or if an exception occurs, update Langfuse tracing context
+        langfuse_context.update_current_observation(
+            output=output_content,
+            usage={
+                'input': prompt_tokens or 0,
+                'output': total_completion_tokens,
+            },
+            model=model_name,
+        )
 
 
 @lazy_litellm_retry_decorator
