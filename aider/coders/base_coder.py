@@ -1104,6 +1104,45 @@ class Coder:
 
     @observe()
     def send_message(self, inp):
+        """
+        Process a user message, send it to the language model, and handle the response.
+
+        This method takes the user's input message, incorporates it into the conversation history,
+        formats the messages for the language model, and sends the request. It manages streaming
+        responses, handles retries on errors, and processes the assistant's reply, which may include
+        code edits, shell commands, or additional prompts.
+
+        When the assistant's response includes code edits, this method applies those edits to the
+        appropriate files. It also handles running any suggested shell commands (with user confirmation)
+        and performs actions like auto-committing changes, linting, and testing based on configuration.
+
+        Args:
+            inp (str): The user's input message to process and send to the language model.
+
+        Yields:
+            str: Segments of the assistant's response when streaming is enabled.
+
+        Side Effects:
+            - Updates `self.cur_messages` and `self.done_messages` with the conversation history.
+            - Modifies files in the repository if code edits are applied.
+            - May execute shell commands suggested by the assistant, after confirming with the user.
+            - Outputs messages and status updates to the user via `self.io`.
+            - Performs auto-commits to the repository if configured.
+
+        Exceptions:
+            - Handles exceptions like `KeyboardInterrupt`, `ContextWindowExceededError`, and others internally.
+            - Manages retries with exponential backoff for transient errors.
+
+        Returns:
+            None: When streaming is disabled.
+            Generator[str, None, None]: When streaming is enabled, yields portions of the assistant's response.
+
+        Notes:
+            - If the response from the assistant is incomplete due to token limits, it manages the situation
+              by updating the conversation context and potentially retrying.
+            - Supports reflection by allowing the assistant to prompt for corrections if needed.
+            - Utilizes the `@observe` decorator for Langfuse instrumentation to track method execution.
+        """
         self.cur_messages += [
             dict(role="user", content=inp),
         ]
