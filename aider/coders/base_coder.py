@@ -13,6 +13,7 @@ import sys
 import threading
 import time
 import traceback
+from langfuse.decorators import observe
 from collections import defaultdict
 from datetime import datetime
 from json.decoder import JSONDecodeError
@@ -1101,6 +1102,7 @@ class Coder:
 
         return chunks
 
+    @observe(as_type="generation")
     def send_message(self, inp):
         self.cur_messages += [
             dict(role="user", content=inp),
@@ -1934,9 +1936,11 @@ class Coder:
     def get_edits(self, mode="update"):
         return []
 
+    @observe
     def apply_edits(self, edits):
         return
 
+    @observe
     def run_shell_commands(self):
         if not self.suggest_shell_commands:
             return ""
