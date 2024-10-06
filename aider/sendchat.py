@@ -48,7 +48,6 @@ def lazy_litellm_retry_decorator(func):
     return wrapper
 
 
-@observe(as_type="generation")
 def send_completion(
     model_name,
     messages,
@@ -60,8 +59,9 @@ def send_completion(
     """
     Send a completion request to the language model and handle the response.
 
-    This function sends a request to the specified language model, processes the response,
-    and updates Langfuse tracing context. It supports both streaming and non-streaming responses.
+    This function manages caching of responses when applicable and delegates the actual LLM
+    call to `_send_completion_to_litellm`. It adapts its behavior based on whether streaming
+    is enabled or not.
 
     Args:
         model_name (str): The name of the language model to use.
@@ -74,20 +74,9 @@ def send_completion(
     Returns:
         tuple: A tuple containing:
             - hash_object (hashlib.sha1): A SHA1 hash object of the request parameters.
-            - res (litellm.ModelResponse): The model's response object.
+            - res: The model's response object.
 
-    Raises:
-        AttributeError: If the response structure is unexpected.
-        Exception: For any other unexpected errors during execution.
-
-    Notes:
-        - This function uses Langfuse for tracing and monitoring.
-        - It handles caching of responses when applicable.
-        - The function adapts its behavior based on whether streaming is enabled or not.
-        - It updates Langfuse tracing context before and after the LLM call.
     """
-    from aider.llm import litellm
-
     kwargs = dict(
         model=model_name,
         messages=messages,
@@ -106,18 +95,77 @@ def send_completion(
 
     key = json.dumps(kwargs, sort_keys=True).encode()
 
-    # Generate SHA1 hash of kwargs and append it to chat_completion_call_hashes
+    # Generate SHA1 hash of kwargs to use as a cache key
     hash_object = hashlib.sha1(key)
 
     if not stream and CACHE is not None and key in CACHE:
         return hash_object, CACHE[key]
 
-    res = litellm.completion(**kwargs)
+    # Call the actual LLM function
+    res = _send_completion_to_litellm(
+        model_name=model_name,
+        messages=messages,
+        functions=functions,
+        stream=stream,
+        temperature=temperature,
+        extra_params=extra_params,
+    )
 
     if not stream and CACHE is not None:
         CACHE[key] = res
 
     return hash_object, res
+
+@observe(as_type="generation")
+def _send_completion_to_litellm(
+    model_name,
+    messages,
+    functions,
+    stream,
+    temperature=0,
+    extra_params=None,
+):
+    """
+    Actually sends the completion request to litellm.completion and handles the response.
+
+    This function sends a request to the specified language model and returns the response.
+    It supports both streaming and non-streaming responses.
+
+    Args:
+        model_name (str): The name of the language model to use.
+        messages (list): A list of message dictionaries to send to the model.
+        functions (list): A list of function definitions that the model can use.
+        stream (bool): Whether to stream the response or not.
+        temperature (float, optional): The sampling temperature to use. Defaults to 0.
+        extra_params (dict, optional): Additional parameters to pass to the model. Defaults to None.
+
+    Returns:
+        res: The model's response object.
+
+    Notes:
+        - This function uses Langfuse for tracing and monitoring.
+        - It adapts its behavior based on whether streaming is enabled or not.
+        - The `@observe` decorator captures input and output for Langfuse.
+    """
+    kwargs = dict(
+        model=model_name,
+        messages=messages,
+        stream=stream,
+    )
+    if temperature is not None:
+        kwargs["temperature"] = temperature
+
+    if functions is not None:
+        function = functions[0]
+        kwargs["tools"] = [dict(type="function", function=function)]
+        kwargs["tool_choice"] = {"type": "function", "function": {"name": function["name"]}}
+
+    if extra_params is not None:
+        kwargs.update(extra_params)
+
+    res = litellm.completion(**kwargs)
+
+    return res
 
 @lazy_litellm_retry_decorator
 def simple_send_with_retries(model_name, messages, extra_params=None):
