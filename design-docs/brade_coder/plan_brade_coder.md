@@ -285,22 +285,43 @@ inputs.
    - **Align Prompt Formats**:
      - Ensure that the output formats from `BradePrompts` match what `EditBlockCoder`'s methods expect, particularly in terms of parsing edits.
 
-- ( ) **Prepare for Architect Model Integration**
+## ( ) Fix Langfuse instrumentation when streaming is enabled.
+
+Our current integration with Langfuse works when streaming of LLM responses is turned off, but raises the following exception when it is turned on:
+
+```
+Unexpected error: 'CustomStreamWrapper' object has no attribute 'choices'
+Traceback (most recent call last):
+  File "/Users/deansher/projects/brade/aider/coders/base_coder.py", line 1130, in send_message
+    yield from self.send(messages, functions=self.functions)
+  File "/Users/deansher/projects/brade/aider/coders/base_coder.py", line 1411, in send
+    hash_object, completion = send_completion(
+                              ^^^^^^^^^^^^^^^^
+  File "/Users/deansher/projects/brade_venv/lib/python3.12/site-packages/langfuse/decorators/langfuse_decorator.py", line 254, in sync_wrapper
+    self._handle_exception(observation, e)
+  File "/Users/deansher/projects/brade_venv/lib/python3.12/site-packages/langfuse/decorators/langfuse_decorator.py", line 508, in _handle_exception
+    raise e
+  File "/Users/deansher/projects/brade_venv/lib/python3.12/site-packages/langfuse/decorators/langfuse_decorator.py", line 252, in sync_wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/deansher/projects/brade/aider/sendchat.py", line 102, in send_completion
+    output=res.choices,
+           ^^^^^^^^^^^
+AttributeError: 'CustomStreamWrapper' object has no attribute 'choices'
+```
+
+We have to address this in a way that retains the benefits of streaming for the caller of `send_completion`:
+the caller must still see the response as a stream and be able to incrementally consume it as they see fit.
+
+### (✅) Write an excellent docstring for `send_completion`.
+
+### ( ) Enhance our Langfuse integration to handle streaming.
+
+## ( ) Introduce "situation analysis" into `BraderCoder`'s prompt generation.
+
+## ( ) **Prepare for Architect Model Integration**
 
    - **Design for Extensibility**:
      - Ensure that `BradeCoder`'s structure allows for easy integration of the subordinate architect model in future updates.
      - Consider adding placeholders or design patterns that facilitate this addition without significant refactoring.
 
-- ( ) **Documentation and Code Comments**
-
-   - **Update Docstrings**:
-     - Provide clear docstrings for all methods in `BradeCoder`, explaining their purpose and any overrides from the superclass.
-   - **Document Differences**:
-     - Clearly document any differences in behavior or implementation from `EditBlockCoder`.
-     - Include explanations for why certain methods were overridden or customized.
-
-## ( ) Introduce "situation analysis" into `BraderCoder`'s prompt generation.
-
-## ( ) Revert our prompt-related changes to other `FooCoder` and `FooPrompts` classes.
-
-Compare our `brade` branch with the `main` branch from upstream and revert `FooCoder` and `FooPrompts` changes to the extent reasonably feasible.

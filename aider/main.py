@@ -10,9 +10,7 @@ from pathlib import Path
 import git
 from dotenv import load_dotenv
 from prompt_toolkit.enums import EditingMode
-from langfuse.decorators import langfuse_context, observe
-
-from langfuse.decorators import langfuse_context, observe
+from langfuse.decorators import langfuse_context
 from aider import __version__, models, utils
 from aider.args import get_parser
 from aider.coders import Coder
@@ -24,9 +22,6 @@ from aider.llm import litellm  # noqa: F401; properly init litellm on launch
 from aider.repo import ANY_GIT_ERROR, GitRepo
 from aider.report import report_uncaught_exceptions
 from aider.versioncheck import check_version, install_from_main_branch, install_upgrade
-
-from .dump import dump  # noqa: F401
-
 
 # It is tricky to decide when to use the name "brade" versus "aider".
 # For now, we use "brade" to refer to the application its executable script.

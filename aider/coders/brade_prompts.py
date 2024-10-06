@@ -148,7 +148,8 @@ This implementation now handles negative numbers and non-integer inputs, making 
         ]
 
     def make_repo_content_prefix(self, _sitrep: ChatSitrep):
-        return "<SYSTEM> Here's a map of the repository:\n\nThis map provides an overview of the project structure and file organization. Use this information to understand the context of the code you're working with and to locate relevant files when needed."
+        return """<SYSTEM> Here's a map of the repository in which you and your partner are collaborating.
+This map provides an overview of the project structure and file organization."""
 
     def make_files_content_prefix(self, _sitrep: ChatSitrep):
         return "<SYSTEM> Here are the contents of the files you can edit:"
@@ -160,4 +161,4 @@ This implementation now handles negative numbers and non-integer inputs, making 
         return "I understand the contents of these files. How can I assist you with modifying or improving the code?"
 
     def make_system_reminder(self, _sitrep: ChatSitrep):
-        return ""
+        return "<SYSTEM> Remember to get your partner's approval before you edit files."
