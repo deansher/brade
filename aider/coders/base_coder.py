@@ -1102,7 +1102,7 @@ class Coder:
 
         return chunks
 
-    @observe(as_type="generation")
+    @observe()
     def send_message(self, inp):
         self.cur_messages += [
             dict(role="user", content=inp),
@@ -1936,7 +1936,6 @@ class Coder:
     def get_edits(self, mode="update"):
         return []
 
-    @observe
     def apply_edits(self, edits):
         return
 
