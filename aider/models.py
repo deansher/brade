@@ -524,6 +524,9 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
                 }
             }
         else:  # level_int > 0
+            # For deep thinking (level > 0), use a 30k token budget. This provides
+            # substantial capacity for extended reasoning while helping keep total tokens
+            # (input + thinking + output) safely under Anthropic's maximum context limit.
             return {
                 "temperature": 1.0,
                 "thinking": {
@@ -814,6 +817,9 @@ MODEL_SETTINGS = [
         examples_as_sys_msg=True,
         accepts_images=True,
         extra_params={
+            # Set max_tokens to 60k to avoid exceeding the model's combined context limit
+            # when working with large prompts, while still allowing substantial output.
+            # This helps prevent "exceed context limit" errors while preserving good capacity.
             "max_tokens": 60000,
         },
         extra_headers={
