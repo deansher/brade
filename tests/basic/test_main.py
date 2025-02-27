@@ -717,6 +717,7 @@ class TestMain(TestCase):
                 return_coder=True,
             )
 
+            self.assertEqual(coder.main_model.name, "anthropic/claude-3-7-sonnet-20250219")
             self.assertTrue(coder.add_cache_headers)
 
     def test_default_model_selection_both_keys(self):
