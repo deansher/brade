@@ -517,6 +517,7 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
             return {}  # Disable extended thinking
         elif level_int == 0:
             return {
+                "temperature": 1.0,
                 "thinking": {
                     "type": "enabled",
                     "budget_tokens": 8192
@@ -524,6 +525,7 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
             }
         else:  # level_int > 0
             return {
+                "temperature": 1.0,
                 "thinking": {
                     "type": "enabled",
                     "budget_tokens": 65536
