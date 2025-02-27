@@ -69,6 +69,9 @@ class ChatMessage(TypedDict):
     prefix: NotRequired[bool | None]
 
 
+from dataclasses import dataclass
+
+
 TokenCountFunc = Callable[[str | ChatMessage | list[ChatMessage]], int]
 """Function that counts tokens in text or chat messages.
 
@@ -77,6 +80,21 @@ Used by models to count tokens in various types of content:
 - Individual chat messages
 - Lists of chat messages
 """
+
+
+@dataclass
+class ReasoningResult:
+    """Result from mapping a reasoning level to model-specific parameters.
+    
+    This class encapsulates whether a model is currently operating in reasoning mode
+    (e.g. extended thinking for Anthropic) and what parameters that requires.
+    
+    Attributes:
+        is_reasoning_enabled: True if the model is currently in reasoning mode
+        model_params: Model-specific parameters needed for reasoning mode
+    """
+    is_reasoning_enabled: bool
+    model_params: dict[str, Any]
 
 
 Edit = tuple[str | None, str, str]

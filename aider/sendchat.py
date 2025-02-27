@@ -260,13 +260,12 @@ def send_completion(
         extra.update(extra_params)
 
     # Add reasoning parameters with highest precedence
-    if model_config.is_reasoning_model:
-        reasoning_params = model_config.map_reasoning_level(reasoning_level)
-        if reasoning_params:
-            extra.update(reasoning_params)
+    reasoning_result = model_config.map_reasoning_level(reasoning_level)
+    if reasoning_result.model_params:
+        extra.update(reasoning_result.model_params)
 
-    # Add temperature if model supports it
-    if temperature is not None and model_config.use_temperature:
+    # Add temperature if model supports it and not in reasoning mode
+    if temperature is not None and model_config.use_temperature and not reasoning_result.is_reasoning_enabled:
         extra["temperature"] = temperature
 
     # Add provider-specific headers if any

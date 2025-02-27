@@ -268,7 +268,7 @@ class _ModelConfigImpl(ModelConfig):
         else:
             self.get_editor_model(editor_model, editor_edit_format)
 
-    def map_reasoning_level(self, level: int) -> dict:
+    def map_reasoning_level(self, level: int) -> ReasoningResult:
         """Map an integer reasoning level to model-specific parameters.
 
         Args:
@@ -279,10 +279,11 @@ class _ModelConfigImpl(ModelConfig):
                    Note: Float values will be truncated to integers.
 
         Returns:
-            An empty dict by default. Subclasses may override to return
-            model-specific parameter mappings.
+            A ReasoningResult indicating whether reasoning is enabled and what
+            parameters that requires. The base implementation returns reasoning
+            disabled with no parameters.
         """
-        return {}
+        return ReasoningResult(is_reasoning_enabled=False, model_params={})
 
     def get_model_info(self, model):
         return get_model_info(model)
@@ -498,42 +499,47 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
         # Call parent class init first to set up base configuration
         super().__init__(model, weak_model, editor_model, editor_edit_format)
 
-    def map_reasoning_level(self, level: int) -> dict:
+    def map_reasoning_level(self, level: int) -> ReasoningResult:
         """Map an integer reasoning level to Anthropic's thinking parameter.
 
         Args:
             level: Integer reasoning level where:
                    - Negative values disable extended thinking
                    - 0 enables with 8k token budget
-                   - Positive values enable with 64k token budget
+                   - Positive values enable with 30k token budget
                    Note: Float values will be truncated to integers.
 
         Returns:
-            A dict containing the "thinking" parameter configuration or
-            an empty dict if extended thinking should be disabled
+            A ReasoningResult indicating whether extended thinking is enabled and what
+            parameters that requires. When enabled, includes the "thinking" parameter
+            with appropriate budget.
         """
         level_int = int(level)
         if level_int < 0:
-            return {}  # Disable extended thinking
+            return ReasoningResult(is_reasoning_enabled=False, model_params={})
         elif level_int == 0:
-            return {
-                "temperature": 1.0,
-                "thinking": {
-                    "type": "enabled",
-                    "budget_tokens": 8192
+            return ReasoningResult(
+                is_reasoning_enabled=True,
+                model_params={
+                    "thinking": {
+                        "type": "enabled",
+                        "budget_tokens": 8192
+                    }
                 }
-            }
+            )
         else:  # level_int > 0
             # For deep thinking (level > 0), use a 30k token budget. This provides
             # substantial capacity for extended reasoning while helping keep total tokens
             # (input + thinking + output) safely under Anthropic's maximum context limit.
-            return {
-                "temperature": 1.0,
-                "thinking": {
-                    "type": "enabled",
-                    "budget_tokens": 30000
+            return ReasoningResult(
+                is_reasoning_enabled=True,
+                model_params={
+                    "thinking": {
+                        "type": "enabled",
+                        "budget_tokens": 30000
+                    }
                 }
-            }
+            )
 
 
 class _OpenAiReasoningConfigImpl(_ModelConfigImpl):
