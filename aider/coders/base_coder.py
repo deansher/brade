@@ -407,8 +407,8 @@ class Coder:
 
         self.main_model = main_model
 
-        if cache_prompts and self.main_model.cache_control:
-            self.add_cache_headers = True
+        if cache_prompts:
+            self.add_cache_headers = self.main_model.cache_control
 
         self.show_diffs = show_diffs
 
