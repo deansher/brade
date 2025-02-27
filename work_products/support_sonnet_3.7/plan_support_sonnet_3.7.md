@@ -66,6 +66,14 @@ We use simple, textual checkboxes at each level of task, both for tasks represen
 - (✔︎) Insert or skip "thinking" blocks based on reasoning_level.  
 - (✔︎) In lines with 3.5 approach, updated for 3.7.  
 
+### ( ) Handle Extended Thinking Blocks
+- ( ) Modify show_send_output_stream() to detect and filter thinking blocks:
+  - ( ) Check chunk.choices[0].delta for "thinking_delta" or "redacted_thinking" blocks
+  - ( ) Skip these blocks instead of adding to partial_response_content
+  - ( ) Ensure thinking blocks never reach message history or user display
+  - ( ) Maintain normal handling of text and function call blocks
+- ( ) Consider similar filtering for non-streaming path in show_send_output()
+
 ### ( ) Manage Token Usage
 - ( ) Final review or adjustments for 128k outputs vs. context window.  
 - ( ) Confirm correct handling for "thinking" tokens within max_tokens.  
