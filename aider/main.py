@@ -687,7 +687,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
             exists = "(exists)" if Path(file).exists() else ""
             logger.debug(f"  - {file} {exists}")
 
-        if args.sonnet or (has_anthropic and not has_openai):
+        if has_anthropic and not has_openai:
             logger.debug(
                 "Using Claude 3.7 Sonnet as default model"
             )
@@ -695,7 +695,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         else:
             logger.debug("Using o1 as default model")
             args.model = "o1"
-
+    
     main_model = models.get_model_config(
         args.model,
         weak_model=args.weak_model,
