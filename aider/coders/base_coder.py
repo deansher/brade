@@ -1675,7 +1675,17 @@ class Coder:
             show_func_err = func_err
 
         try:
-            self.partial_response_content = completion.choices[0].message.content or ""
+            message = completion.choices[0].message
+            if hasattr(message, "content") and isinstance(message.content, list):
+                # Handle array of content blocks
+                content = ""
+                for block in message.content:
+                    if block.get("type") not in ["thinking", "redacted_thinking", "signature"]:
+                        content += block.get("text", "")
+                self.partial_response_content = content
+            else:
+                # Handle simple string content
+                self.partial_response_content = message.content or ""
         except AttributeError as content_err:
             show_content_err = content_err
 
@@ -1700,6 +1710,12 @@ class Coder:
         ):
             raise FinishReasonLength()
 
+    def is_thinking_block(self, delta):
+        """Check if a delta contains a thinking block."""
+        if not hasattr(delta, "type"):
+            return False
+        return delta.type in ["thinking_delta", "redacted_thinking", "signature_delta"]
+
     def show_send_output_stream(self, completion):
         for chunk in completion:
             if len(chunk.choices) == 0:
@@ -1723,7 +1739,11 @@ class Coder:
                 pass
 
             try:
-                text = chunk.choices[0].delta.content
+                delta = chunk.choices[0].delta
+                if self.is_thinking_block(delta):
+                    continue
+                
+                text = delta.content
                 if text:
                     self.partial_response_content += text
             except AttributeError:
