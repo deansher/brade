@@ -528,7 +528,7 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
                 "temperature": 1.0,
                 "thinking": {
                     "type": "enabled",
-                    "budget_tokens": 65536
+                    "budget_tokens": 30000
                 }
             }
 
@@ -814,7 +814,7 @@ MODEL_SETTINGS = [
         examples_as_sys_msg=True,
         accepts_images=True,
         extra_params={
-            "max_tokens": 128000,
+            "max_tokens": 60000,
         },
         extra_headers={
             "anthropic-beta": "output-128k-2025-02-19"
