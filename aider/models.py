@@ -823,6 +823,65 @@ MODEL_SETTINGS = [
         model_config_class=_AnthropicReasoningConfigImpl,
     ),
     ModelSettings(
+        "openrouter/anthropic/claude-3.7-sonnet",
+        "diff",
+        weak_model_name="openrouter/anthropic/claude-3-haiku",
+        editor_model_name="openrouter/anthropic/claude-3.7-sonnet",
+        editor_edit_format="editor-diff",
+        use_repo_map=True,
+        examples_as_sys_msg=True,
+        accepts_images=True,
+        extra_params={
+            "max_tokens": 128000,
+        },
+        extra_headers={
+            "anthropic-beta": "output-128k-2025-02-19"
+        },
+        reminder="user",
+        cache_control=True,
+        is_reasoning_model=True,
+        model_config_class=_AnthropicReasoningConfigImpl,
+    ),
+    ModelSettings(
+        "openrouter/anthropic/claude-3.7-sonnet:beta",
+        "diff",
+        weak_model_name="openrouter/anthropic/claude-3-haiku:beta",
+        editor_model_name="openrouter/anthropic/claude-3.7-sonnet:beta",
+        editor_edit_format="editor-diff",
+        use_repo_map=True,
+        examples_as_sys_msg=True,
+        accepts_images=True,
+        extra_params={
+            "max_tokens": 128000,
+        },
+        extra_headers={
+            "anthropic-beta": "output-128k-2025-02-19"
+        },
+        reminder="user",
+        cache_control=True,
+        is_reasoning_model=True,
+        model_config_class=_AnthropicReasoningConfigImpl,
+    ),
+    ModelSettings(
+        "vertex_ai/claude-3-7-sonnet@20250219",
+        "diff",
+        weak_model_name="vertex_ai/claude-3-haiku@20240307",
+        editor_model_name="vertex_ai/claude-3-7-sonnet@20250219",
+        editor_edit_format="editor-diff",
+        use_repo_map=True,
+        examples_as_sys_msg=True,
+        accepts_images=True,
+        extra_params={
+            "max_tokens": 128000,
+        },
+        extra_headers={
+            "anthropic-beta": "output-128k-2025-02-19"
+        },
+        reminder="user",
+        is_reasoning_model=True,
+        model_config_class=_AnthropicReasoningConfigImpl,
+    ),
+    ModelSettings(
         "anthropic/claude-3-haiku-20240307",
         "whole",
         weak_model_name="anthropic/claude-3-haiku-20240307",
