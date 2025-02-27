@@ -4,149 +4,121 @@ This document outlines our plan for enhancing Brade to support Claude 3.7 Sonnet
 
 ## Summary
 
-- We will add support for Claude 3.7 Sonnet, making it our new default Anthropic model
-- We will treat Sonnet 3.7 similarly to Sonnet 3.5, with the addition of extended thinking support
-- Extended thinking will be controlled via reasoning_level:
+We will add support for Claude 3.7 Sonnet, making it our new default Anthropic model. While we'll treat it similarly to Sonnet 3.5 in most ways, we'll add support for its extended thinking capabilities (similar to how we handle o3). Key aspects:
+
+- Make Sonnet 3.7 the default model when only ANTHROPIC_API_KEY exists
+- Configure extended thinking based on reasoning_level:
   - Level -1: Extended thinking disabled
-  - Level 0: 8k token budget for extended thinking
-  - Level 1: 64k token budget for extended thinking
-- We will enable 128k token output via the new beta header
+  - Level 0: Enable with 8k token budget
+  - Level 1: Enable with 64k token budget
+- Enable 128k token output via anthropic-beta header
+- Maintain compatibility with existing Anthropic support patterns
 
 ## Critical Constraints
 
-1. Extended thinking requires specific configuration:
+1. Extended thinking configuration:
    - Must be enabled via the "thinking" parameter
-   - Requires a minimum budget of 1,024 tokens
+   - Requires minimum budget of 1,024 tokens
    - Budget counts against max_tokens limit
    - Thinking blocks are billed as output tokens
+   - Must handle both normal and redacted thinking blocks
 
-2. We will maintain our existing message handling:
-   - Continue using system messages in our higher-level code
-   - Use existing Anthropic message transformation at the lowest level
-   - Keep the "Understood" message pairs pattern
+2. Message handling requirements:
+   - Continue using system messages in higher-level code
+   - Use existing Anthropic message transformation
+   - Maintain "Understood" message pairs pattern
+   - Preserve thinking blocks during tool use
 
-3. We will enable the 128k output beta:
-   - Set anthropic-beta header to "output-128k-2025-02-19"
-   - This allows for substantially longer responses
-   - Particularly effective with extended thinking
+3. Output capabilities:
+   - Enable 128k output via anthropic-beta header
+   - Set header to "output-128k-2025-02-19"
+   - Particularly valuable with extended thinking
+   - Consider streaming for very long outputs
 
-## Requirements
+## Implementation Plan
 
-Anthropic has released Claude 3.7 Sonnet with extended thinking capabilities. We need to add support for this model to Brade in a way that:
-- Makes it our new default when only ANTHROPIC_API_KEY exists
-- Integrates extended thinking based on reasoning_level
-- Takes advantage of 128k output capability
-- Maintains compatibility with our existing Anthropic support
+### 1. Model Configuration
 
-## Tasks
+#### Model Settings
+- Add Sonnet 3.7 configuration to models.py
+- Set as reasoning model (like o3)
+- Use same edit format as Sonnet 3.5
+- Configure appropriate weak/editor models
+- Enable 128k output beta header
 
-### Add Sonnet 3.7 Model Support
+#### Extended Thinking Parameters
+- Map reasoning levels to budgets:
+  - Level -1: thinking parameter omitted
+  - Level 0: thinking.budget_tokens = 8192
+  - Level 1: thinking.budget_tokens = 65536
+- Handle disabled case cleanly
+- Set appropriate max_tokens limits
 
-#### Requirements
+### 2. Default Model Selection
 
-1. Add Sonnet 3.7 model configuration to models.py
-2. Configure extended thinking parameters based on reasoning_level
-3. Enable 128k output beta header
-4. Set appropriate defaults for the model
+#### Selection Logic
+- Make Sonnet 3.7 default when only ANTHROPIC_API_KEY exists
+- Maintain o1 as default when OPENAI_API_KEY exists
+- Allow explicit model selection to override defaults
 
-#### Implementation Steps
+#### Configuration Consistency
+- Ensure proper edit formats
+- Set appropriate model parameters
+- Maintain correct prompts and messages
 
-- Add Sonnet 3.7 model settings
-  - Configure as reasoning model
-  - Set appropriate edit format (same as Sonnet 3.5)
-  - Configure default models for weak/editor roles
-  - Set other model-specific parameters
-  - Add beta header for 128k output
+### 3. Extended Thinking Integration
 
-- Add tests for Sonnet 3.7 configuration
-  - Test model settings
-  - Test reasoning level mapping
-  - Test extended thinking parameters
+#### Core Implementation
+- Add thinking parameter handling
+- Support both normal and redacted blocks
+- Preserve blocks during tool use
+- Handle streaming appropriately
 
-### Implement Extended Thinking Support
+#### Token Management
+- Track thinking token usage
+- Account for budget in max_tokens
+- Handle context window calculations
+- Support 128k output capability
 
-#### Requirements
+### 4. Testing Strategy
 
-1. Map reasoning levels to extended thinking parameters:
-   - Level -1: Disable extended thinking
-   - Level 0: Enable with 8k token budget
-   - Level 1: Enable with 64k token budget
+#### Unit Tests
+- Test model configuration
+- Verify reasoning level mapping
+- Check extended thinking parameters
+- Validate default selection logic
 
-2. Keep implementation focused:
-   - Add extended thinking at the appropriate level
-   - Maintain compatibility with existing code
-   - Follow established Anthropic patterns
-
-3. Ensure proper test coverage:
-   - Test each reasoning level
-   - Verify budget settings
-   - Test with and without extended thinking
-
-#### Implementation Steps
-
-- Add extended thinking configuration
-  - Map reasoning levels to budgets
-  - Handle disabled case (-1)
-  - Set appropriate max_tokens
-
-- Add focused test cases
-  - Test each reasoning level
-  - Verify budget settings
-  - Test disabled case
-
-### Configure Default Model Selection
-
-#### Requirements
-
-1. Set Sonnet 3.7 as the default Anthropic model:
-   - Use when only ANTHROPIC_API_KEY exists
-   - Allow explicit selection via model name
-
-2. Maintain existing fallback logic:
-   - Use o1 when OPENAI_API_KEY exists
-   - Document behavior clearly
-
-3. Ensure consistent configuration:
-   - Proper edit formats
-   - Appropriate model settings
-   - Correct prompts and message handling
-
-#### Implementation Steps
-
-- Update default model selection
-  - Set Sonnet 3.7 as Anthropic default
-  - Maintain o1 as OpenAI default
-  - Document selection logic
-
-- Verify model settings
-  - Confirm proper configuration
-  - Validate edit formats
-  - Test settings
-
-- Add integration tests:
-  - Test API key combinations
-  - Verify default selection
-  - Document behavior
-
-### Validate Changes
-
-#### Requirements
-
-1. Ensure all tests pass
-2. Verify changes work with Sonnet 3.7
-3. Test extended thinking functionality
-4. Document any limitations
-
-#### Implementation Steps
-
-- Run test suite
+#### Integration Tests
 - Test with live model
-- Verify extended thinking
-- Document findings
+- Verify extended thinking at each level
+- Check 128k output functionality
+- Validate tool use with thinking
+
+#### Edge Cases
+- Test disabled extended thinking
+- Verify redacted block handling
+- Check streaming behavior
+- Validate token calculations
 
 ## Future Considerations
 
-1. Monitor litellm support for extended thinking
-2. Watch for Anthropic API updates
-3. Consider refining reasoning level mapping
-4. Evaluate need for additional token budgets
+1. Performance Monitoring
+   - Track extended thinking effectiveness
+   - Monitor token usage patterns
+   - Evaluate streaming performance
+
+2. Potential Enhancements
+   - Refine reasoning level mapping
+   - Add more granular control options
+   - Optimize token budget allocation
+
+3. Maintenance
+   - Monitor litellm support updates
+   - Watch for Anthropic API changes
+   - Track model performance metrics
+
+4. Documentation
+   - Update user documentation
+   - Add extended thinking examples
+   - Document best practices
+   - Maintain troubleshooting guides
