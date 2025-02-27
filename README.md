@@ -62,11 +62,11 @@ python -m pip install -U aider-chat
 # Change directory into a git repo
 cd /to/your/git/repo
 
-# Work with Claude 3.5 Sonnet on your repo
+# Work with Claude 3.7 Sonnet on your repo (default when only Anthropic key is present)
 export ANTHROPIC_API_KEY=your-key-goes-here
 aider
 
-# Work with GPT-4o on your repo
+# Work with GPT-4o on your repo (default when OpenAI key is present)
 export OPENAI_API_KEY=your-key-goes-here
 aider 
 ```
