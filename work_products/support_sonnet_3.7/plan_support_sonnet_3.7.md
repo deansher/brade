@@ -73,6 +73,7 @@ We use simple, textual checkboxes at each level of task, both for tasks represen
   - ( ) Ensure thinking blocks never reach message history or user display
   - ( ) Maintain normal handling of text and function call blocks
 - ( ) Consider similar filtering for non-streaming path in show_send_output()
+- ( ) Consider similar filtering for non-streaming path in show_send_output()
 
 ### ( ) Manage Token Usage
 - ( ) Final review or adjustments for 128k outputs vs. context window.  
