@@ -13,12 +13,15 @@ tree -I '__pycache__|.git|.pytest_cache|*.pyc|venv|.venv|env' --dirsfirst
 ../../Documents/brade/technical_docs_for_rag/anthropic/anthropic-message-api.md
 ▸ Editable Files:
 CONTRIBUTING.md
+README.md
 aider/main.py
 aider/models.py
 aider/sendchat.py
 aider/types.py
 pyproject.toml
-work_products/support_sonnet_3.7/plan_support_sonnet_3.7.md```
+work_products/sample-plan.md
+work_products/support_sonnet_3.7/plan_support_sonnet_3.7.md
+```
 
 # Broad Editable
 
