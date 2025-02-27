@@ -29,8 +29,8 @@ We use simple, textual checkboxes at each level of task, both for tasks represen
 2. Support extended thinking (Anthropic's term for deeper reasoning) with these reasoning level behaviors:
    - Level -1: Extended thinking disabled.
    - Level 0: Enable with ~8k token budget.
-   - Level 1: Enable with ~64k token budget.
-3. Enable up to 128k token output via anthropic-beta header (output-128k-2025-02-19).
+   - Level 1: Enable with ~30k token budget (reduced from 64k to avoid context limit errors).
+3. Set default max_tokens to 60k (reduced from 128k to avoid context limit errors), while keeping the 128k capability via anthropic-beta header.
 4. Maintain compatibility with our existing Anthropic flow and patterns.
 5. Continue to treat Sonnet 3.7 similarly to Sonnet 3.5, except for extended thinking support.
 
@@ -44,9 +44,9 @@ We use simple, textual checkboxes at each level of task, both for tasks represen
 - (✔︎) Enable 128k output (anthropic-beta: output-128k-2025-02-19).
 
 ### (✔︎) Configure Extended Thinking Parameters
-- (✔︎) Map reasoning levels: -1 => disabled, 0 => 8192 tokens, 1 => 65536 tokens.  
+- (✔︎) Map reasoning levels: -1 => disabled, 0 => 8192 tokens, 1 => 30000 tokens.  
 - (✔︎) Handle disabled case cleanly (return {}).  
-- (✔︎) Set max_tokens = 128000 for our 128k limit.
+- (✔︎) Set max_tokens = 60000 to avoid context limit errors with large prompts.
 
 ## ( ) Default Model Selection
 
