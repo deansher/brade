@@ -68,30 +68,52 @@ class TestModels(unittest.TestCase):
         """Test reasoning level mapping for different model types."""
         # Test base ModelConfig class returns empty dict
         model = _ModelConfigImpl("gpt-4")
-        self.assertEqual(model.map_reasoning_level_to_config(0), {})
-        self.assertEqual(model.map_reasoning_level_to_config(-1), {})
-        self.assertEqual(model.map_reasoning_level_to_config(1), {})
+        self.assertEqual(model.map_reasoning_level_to_config(0), ReasoningConfig(is_reasoning_enabled=False, model_params={}))
+        self.assertEqual(model.map_reasoning_level_to_config(-1), ReasoningConfig(is_reasoning_enabled=False, model_params={}))
+        self.assertEqual(model.map_reasoning_level_to_config(1), ReasoningConfig(is_reasoning_enabled=False, model_params={}))
 
-        # Test reasoning model returns correct mappings
-        model = get_model_config(
-            "o3-mini"
-        )  # Using o3-mini as an example reasoning model
+        # Test OpenAI reasoning model returns correct mappings
+        model = get_model_config("o3-mini")  # Using o3-mini as an example OpenAI reasoning model
 
         # Test default reasoning level (0)
-        self.assertEqual(model.map_reasoning_level(0), {"reasoning_effort": "medium"})
+        self.assertEqual(model.map_reasoning_level_to_config(0), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "medium"}))
 
         # Test reduced levels
-        self.assertEqual(model.map_reasoning_level(-1), {"reasoning_effort": "low"})
-        self.assertEqual(model.map_reasoning_level(-2), {"reasoning_effort": "low"})
-        self.assertEqual(model.map_reasoning_level(-3), {"reasoning_effort": "low"})
+        self.assertEqual(model.map_reasoning_level_to_config(-1), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "low"}))
+        self.assertEqual(model.map_reasoning_level_to_config(-2), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "low"}))
+        self.assertEqual(model.map_reasoning_level_to_config(-3), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "low"}))
 
         # Test increased levels
-        self.assertEqual(model.map_reasoning_level(1), {"reasoning_effort": "high"})
-        self.assertEqual(model.map_reasoning_level(2), {"reasoning_effort": "high"})
+        self.assertEqual(model.map_reasoning_level_to_config(1), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "high"}))
+        self.assertEqual(model.map_reasoning_level_to_config(2), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "high"}))
 
         # Test float values are truncated
-        self.assertEqual(model.map_reasoning_level(1.7), {"reasoning_effort": "high"})
-        self.assertEqual(model.map_reasoning_level(-1.7), {"reasoning_effort": "low"})
+        self.assertEqual(model.map_reasoning_level_to_config(1.7), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "high"}))
+        self.assertEqual(model.map_reasoning_level_to_config(-1.7), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "low"}))
+
+        # Test Anthropic reasoning model returns correct mappings
+        model = get_model_config("anthropic/claude-3-7-sonnet-20250219")
+
+        # Test disabled reasoning level (-1)
+        self.assertEqual(model.map_reasoning_level_to_config(-1), ReasoningConfig(is_reasoning_enabled=False, model_params={}))
+
+        # Test default reasoning level (0) with 8k token budget
+        self.assertEqual(model.map_reasoning_level_to_config(0), ReasoningConfig(
+            is_reasoning_enabled=True,
+            model_params={"thinking": {"type": "enabled", "budget_tokens": 8192}}
+        ))
+
+        # Test increased reasoning level (1) with 30k token budget
+        self.assertEqual(model.map_reasoning_level_to_config(1), ReasoningConfig(
+            is_reasoning_enabled=True,
+            model_params={"thinking": {"type": "enabled", "budget_tokens": 30000}}
+        ))
+
+        # Test float values are truncated
+        self.assertEqual(model.map_reasoning_level_to_config(1.7), ReasoningConfig(
+            is_reasoning_enabled=True,
+            model_params={"thinking": {"type": "enabled", "budget_tokens": 30000}}
+        ))
 
     def test_model_creation(self):
         # Test base model creation
