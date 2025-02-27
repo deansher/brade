@@ -10,6 +10,7 @@ from aider.models import (
     sanity_check_model,
     sanity_check_models,
 )
+from aider.types import ReasoningConfig
 
 
 class TestModels(unittest.TestCase):
