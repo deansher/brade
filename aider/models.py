@@ -484,6 +484,53 @@ class _ModelConfigImpl(ModelConfig):
         return res
 
 
+class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
+    """A ModelConfig implementation for Anthropic models with extended thinking.
+
+    This class extends _ModelConfigImpl to provide specialized behavior for models
+    that support extended thinking while maintaining compatibility with the
+    ModelConfig interface.
+    """
+
+    def __init__(
+        self, model, weak_model=None, editor_model=None, editor_edit_format=None
+    ):
+        # Call parent class init first to set up base configuration
+        super().__init__(model, weak_model, editor_model, editor_edit_format)
+
+    def map_reasoning_level(self, level: int) -> dict:
+        """Map an integer reasoning level to Anthropic's thinking parameter.
+
+        Args:
+            level: Integer reasoning level where:
+                   - Negative values disable extended thinking
+                   - 0 enables with 8k token budget
+                   - Positive values enable with 64k token budget
+                   Note: Float values will be truncated to integers.
+
+        Returns:
+            A dict containing the "thinking" parameter configuration or
+            an empty dict if extended thinking should be disabled
+        """
+        level_int = int(level)
+        if level_int < 0:
+            return {}  # Disable extended thinking
+        elif level_int == 0:
+            return {
+                "thinking": {
+                    "type": "enabled",
+                    "budget_tokens": 8192
+                }
+            }
+        else:  # level_int > 0
+            return {
+                "thinking": {
+                    "type": "enabled",
+                    "budget_tokens": 65536
+                }
+            }
+
+
 class _OpenAiReasoningConfigImpl(_ModelConfigImpl):
     """A ModelConfig implementation for OpenAI reasoning models.
 
@@ -741,7 +788,7 @@ MODEL_SETTINGS = [
         reminder="user",
     ),
     ModelSettings(
-        "claude-3-5-sonnet-20241022",
+        "anthropic/claude-3-5-sonnet-20241022",
         "diff",
         weak_model_name="claude-3-haiku-20240307",
         editor_model_name="claude-3-5-sonnet-20241022",
@@ -754,6 +801,26 @@ MODEL_SETTINGS = [
         },
         cache_control=True,
         reminder="user",
+    ),
+    ModelSettings(
+        "anthropic/claude-3-7-sonnet-20250219",
+        "diff",
+        weak_model_name="anthropic/claude-3-haiku-20240307",
+        editor_model_name="anthropic/claude-3-7-sonnet-20250219",
+        editor_edit_format="editor-diff",
+        use_repo_map=True,
+        examples_as_sys_msg=True,
+        accepts_images=True,
+        extra_params={
+            "max_tokens": 128000,
+        },
+        extra_headers={
+            "anthropic-beta": "output-128k-2025-02-19"
+        },
+        cache_control=True,
+        reminder="user",
+        is_reasoning_model=True,
+        model_config_class=_AnthropicReasoningConfigImpl,
     ),
     ModelSettings(
         "anthropic/claude-3-haiku-20240307",
