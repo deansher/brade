@@ -11,7 +11,7 @@ This provides a consistent vocabulary for types across both coding styles while
 preserving merge compatibility where needed.
 """
 
-from typing import Callable, NotRequired, TypedDict
+from typing import Any, Callable, NotRequired, TypedDict
 
 
 class ImageUrl(TypedDict):
