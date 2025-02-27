@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import ANY, MagicMock, patch
 
 from aider.models import (
-    _OpenAiReasoningConfigImpl,
+    _OpenAiReasoningModelConfig,
     ModelConfig,
     _ModelConfigImpl,
     get_model_config,
@@ -52,25 +52,25 @@ class TestModels(unittest.TestCase):
         """Test that get_model_config returns the correct implementation class."""
         # Test reasoning model gets _OpenAiReasoningConfigImpl
         model = get_model_config("o3-mini")
-        self.assertIsInstance(model, _OpenAiReasoningConfigImpl)
+        self.assertIsInstance(model, _OpenAiReasoningModelConfig)
 
         # Test non-reasoning model gets _ModelConfigImpl
         model = get_model_config("gpt-4")
         self.assertIsInstance(model, _ModelConfigImpl)
-        self.assertNotIsInstance(model, _OpenAiReasoningConfigImpl)
+        self.assertNotIsInstance(model, _OpenAiReasoningModelConfig)
 
         # Test unknown model gets _ModelConfigImpl
         model = get_model_config("unknown-model")
         self.assertIsInstance(model, _ModelConfigImpl)
-        self.assertNotIsInstance(model, _OpenAiReasoningConfigImpl)
+        self.assertNotIsInstance(model, _OpenAiReasoningModelConfig)
 
     def test_map_reasoning_level(self):
         """Test reasoning level mapping for different model types."""
         # Test base ModelConfig class returns empty dict
         model = _ModelConfigImpl("gpt-4")
-        self.assertEqual(model.map_reasoning_level(0), {})
-        self.assertEqual(model.map_reasoning_level(-1), {})
-        self.assertEqual(model.map_reasoning_level(1), {})
+        self.assertEqual(model.map_reasoning_level_to_config(0), {})
+        self.assertEqual(model.map_reasoning_level_to_config(-1), {})
+        self.assertEqual(model.map_reasoning_level_to_config(1), {})
 
         # Test reasoning model returns correct mappings
         model = get_model_config(
@@ -101,7 +101,7 @@ class TestModels(unittest.TestCase):
 
         # Test _OpenAiReasoningConfigImpl creation
         model = get_model_config("o3-mini")
-        self.assertIsInstance(model, _OpenAiReasoningConfigImpl)
+        self.assertIsInstance(model, _OpenAiReasoningModelConfig)
         self.assertEqual(model.name, "o3-mini")
 
         # Test model with weak model
