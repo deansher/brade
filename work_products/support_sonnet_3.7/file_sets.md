@@ -19,7 +19,6 @@ aider/models.py
 aider/sendchat.py
 aider/types.py
 pyproject.toml
-work_products/sample-plan.md
 work_products/support_sonnet_3.7/plan_support_sonnet_3.7.md
 ```
 
