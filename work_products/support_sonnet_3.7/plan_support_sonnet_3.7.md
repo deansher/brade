@@ -1,8 +1,29 @@
-# Enhance Brade – Plan for Claude 3.7 Sonnet Support
+# Plan for Supporting Sonnet 3.7
 
-This document outlines our plan for enhancing Brade to support Claude 3.7 Sonnet with extended thinking capabilities.
+We are collaborating to enhance our Python project as described below. We want to work efficiently in an organized way. For the portions of the code that we must change to meet our functionality goals, we want to move toward beautiful, idiomatic Python following the style guidelines in CONTRIBUTING.md. We also want to move toward more testable code with simple unit tests that cover the most important paths.
 
-## Summary
+This document contain three kinds of material:
+- requirements
+- specific plans for meeting those requirements
+- our findings as we analyze our code along the way
+
+We write down our findings as we go, to build up context for later tasks. When a task requires analysis, we use the section header as the task and write down our findings as that section's content.
+
+For relatively complex tasks that benefit from a prose description of our approach, we use the section header as the task and write down our approach as that section's content. We nest these sections as appropriate.
+
+For simpler tasks that can be naturally specified in a single sentence, we move to bullet points.
+
+We use simple, textual checkboxes at each level of task, both for tasks represented by section headers and for tasks represented by bullets. Like this:
+
+```
+### ( ) Complex Task
+
+- (✔︎) Subtask
+  - (✔︎) Subsubtask
+- ( ) Another subtask
+```
+
+## Requirements
 
 We will add support for Claude 3.7 Sonnet, making it our new default Anthropic model. While we'll treat it similarly to Sonnet 3.5 in most ways, we'll add support for its extended thinking capabilities (similar to how we handle o3). Key aspects:
 

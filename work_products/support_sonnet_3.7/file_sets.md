@@ -6,12 +6,19 @@ tree -I '__pycache__|.git|.pytest_cache|*.pyc|venv|.venv|env' --dirsfirst
 
 # Core Files
 
-Read-only:
 ```
-design_docs/external_docs/litellm_docs.md
-design_docs/external_docs/openai/openai_reasoning_models/openai_model_spec.md
-design_docs/external_docs/openai/openai_reasoning_models/openai_reasoning_models.md
-```
+▸ Readonly Files:
+../../Documents/brade/technical_docs_for_rag/anthropic/anthropic-build-with-extended-thinking.md
+../../Documents/brade/technical_docs_for_rag/anthropic/anthropic-litellm-api.md
+../../Documents/brade/technical_docs_for_rag/anthropic/anthropic-message-api.md
+▸ Editable Files:
+CONTRIBUTING.md
+aider/main.py
+aider/models.py
+aider/sendchat.py
+aider/types.py
+pyproject.toml
+work_products/support_sonnet_3.7/plan_support_sonnet_3.7.md```
 
 # Broad Editable
 
