@@ -744,7 +744,7 @@ class TestMain(TestCase):
                 self.assertEqual(coder.main_model.name, "o1")
 
     def test_default_model_selection_anthropic_only(self):
-        """Test that Claude 3.5 Sonnet is selected when only Anthropic key is present."""
+        """Test that Claude 3.7 Sonnet is selected when only Anthropic key is present."""
         with GitTemporaryDirectory():
             # Configure logging to show debug messages
             logging.basicConfig(level=logging.DEBUG)
@@ -763,7 +763,7 @@ class TestMain(TestCase):
                     output=DummyOutput(),
                     return_coder=True,
                 )
-                self.assertEqual(coder.main_model.name, "claude-3-5-sonnet-20241022")
+                self.assertEqual(coder.main_model.name, "anthropic/claude-3-7-sonnet-20250219")
 
     def test_4o_and_cache_options(self):
         with GitTemporaryDirectory():
