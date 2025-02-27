@@ -682,16 +682,16 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         logger.debug(
             f"Raw environment values - OpenAI: '{openai_key}...', Anthropic: '{anthropic_key}...'"
         )
-        logger.debug(f"Config files search order, if no --config:")
+        logger.debug("Config files search order, if no --config:")
         for file in default_config_files:
             exists = "(exists)" if Path(file).exists() else ""
             logger.debug(f"  - {file} {exists}")
 
-        if has_anthropic and not has_openai:
+        if args.sonnet or (has_anthropic and not has_openai):
             logger.debug(
-                "Only Anthropic API key present, selecting Claude 3.5 Sonnet as default model"
+                "Using Claude 3.7 Sonnet as default model"
             )
-            args.model = "claude-3-5-sonnet-20241022"
+            args.model = "anthropic/claude-3-7-sonnet-20250219"
         else:
             logger.debug("Using o1 as default model")
             args.model = "o1"
