@@ -260,7 +260,7 @@ def send_completion(
         extra.update(extra_params)
 
     # Add reasoning parameters with highest precedence
-    reasoning_result = model_config.map_reasoning_level(reasoning_level)
+    reasoning_result = model_config.map_reasoning_level_to_config(reasoning_level)
     if reasoning_result.model_params:
         extra.update(reasoning_result.model_params)
 

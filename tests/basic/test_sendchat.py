@@ -7,7 +7,7 @@ from llm_multiple_choice import ChoiceManager
 
 from aider.exceptions import InvalidResponseError, SendCompletionError
 from aider.llm import litellm
-from aider.models import _ModelConfigImpl, _OpenAiReasoningConfigImpl, get_model_config
+from aider.models import _ModelConfigImpl, _OpenAiReasoningModelConfig, get_model_config
 from aider.sendchat import (
     analyze_assistant_response,
     send_completion,
@@ -421,7 +421,7 @@ class TestAnalyzeChatSituation(unittest.TestCase):
         mock_completion.return_value = mock_response
 
         # Create reasoning model with extra params
-        model = _OpenAiReasoningConfigImpl("o3-mini")
+        model = _OpenAiReasoningModelConfig("o3-mini")
         model.extra_params = {"reasoning_effort": "low"}
 
         # Call with extra params that should NOT override reasoning level
@@ -495,7 +495,7 @@ class TestAnalyzeChatSituation(unittest.TestCase):
     def test_send_completion_reasoning_parameter_precedence(self, mock_completion):
         """Test that reasoning_level takes precedence over other reasoning parameters."""
         # Create reasoning model with extra params
-        model = _OpenAiReasoningConfigImpl("o3-mini")
+        model = _OpenAiReasoningModelConfig("o3-mini")
         model.extra_params = {"reasoning_effort": "low"}
 
         # Call with extra params that should NOT override reasoning level

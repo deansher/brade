@@ -22,6 +22,27 @@ pyproject.toml
 work_products/support_sonnet_3.7/plan_support_sonnet_3.7.md
 ```
 
+# With Tests
+
+```
+▸ Readonly Files:
+../../Documents/brade/technical_docs_for_rag/anthropic/anthropic-build-with-extended-thinking.md
+../../Documents/brade/technical_docs_for_rag/anthropic/anthropic-litellm-api.md
+../../Documents/brade/technical_docs_for_rag/anthropic/anthropic-message-api.md
+▸ Editable Files:
+CONTRIBUTING.md
+README.md
+aider/main.py
+aider/models.py
+aider/sendchat.py
+aider/types.py
+pyproject.toml
+tests/basic/test_main.py
+tests/basic/test_models.py
+tests/basic/test_sendchat.py
+work_products/support_sonnet_3.7/plan_support_sonnet_3.7.md
+```
+
 # Broad Editable
 
 ```

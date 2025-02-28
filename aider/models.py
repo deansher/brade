@@ -36,7 +36,7 @@ from PIL import Image
 
 from aider import urls
 from aider.dump import dump  # noqa: F401
-from aider.types import ReasoningResult
+from aider.types import ReasoningConfig
 from aider.llm import litellm
 
 
@@ -172,9 +172,9 @@ class ModelConfig:
         """Return True if this model produces code edits in its responses."""
         return self.edit_format not in ("whole", None)
 
-    def map_reasoning_level(self, level: int) -> dict:
+    def map_reasoning_level_to_config(self, reasoning_level: int) -> ReasoningConfig:
         """Map an integer reasoning level to model-specific parameters."""
-        return {}
+        return ReasoningConfig(is_reasoning_enabled=False, model_params={})
 
     def token_count(self, messages) -> int:
         """Count tokens in messages or text."""
@@ -269,7 +269,7 @@ class _ModelConfigImpl(ModelConfig):
         else:
             self.get_editor_model(editor_model, editor_edit_format)
 
-    def map_reasoning_level(self, level: int) -> ReasoningResult:
+    def map_reasoning_level_to_config(self, level: int) -> ReasoningConfig:
         """Map an integer reasoning level to model-specific parameters.
 
         Args:
@@ -280,11 +280,11 @@ class _ModelConfigImpl(ModelConfig):
                    Note: Float values will be truncated to integers.
 
         Returns:
-            A ReasoningResult indicating whether reasoning is enabled and what
+            A ReasoningConfig indicating whether reasoning is enabled and what
             parameters that requires. The base implementation returns reasoning
             disabled with no parameters.
         """
-        return ReasoningResult(is_reasoning_enabled=False, model_params={})
+        return ReasoningConfig(is_reasoning_enabled=False, model_params={})
 
     def get_model_info(self, model):
         return get_model_info(model)
@@ -486,7 +486,7 @@ class _ModelConfigImpl(ModelConfig):
         return res
 
 
-class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
+class _AnthropicReasoningModelConfig(_ModelConfigImpl):
     """A ModelConfig implementation for Anthropic models with extended thinking.
 
     This class extends _ModelConfigImpl to provide specialized behavior for models
@@ -500,7 +500,7 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
         # Call parent class init first to set up base configuration
         super().__init__(model, weak_model, editor_model, editor_edit_format)
 
-    def map_reasoning_level(self, level: int) -> ReasoningResult:
+    def map_reasoning_level_to_config(self, level: int) -> ReasoningConfig:
         """Map an integer reasoning level to Anthropic's thinking parameter.
 
         Args:
@@ -517,9 +517,9 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
         """
         level_int = int(level)
         if level_int < 0:
-            return ReasoningResult(is_reasoning_enabled=False, model_params={})
+            return ReasoningConfig(is_reasoning_enabled=False, model_params={})
         elif level_int == 0:
-            return ReasoningResult(
+            return ReasoningConfig(
                 is_reasoning_enabled=True,
                 model_params={
                     "thinking": {
@@ -532,7 +532,7 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
             # For deep thinking (level > 0), use a 30k token budget. This provides
             # substantial capacity for extended reasoning while helping keep total tokens
             # (input + thinking + output) safely under Anthropic's maximum context limit.
-            return ReasoningResult(
+            return ReasoningConfig(
                 is_reasoning_enabled=True,
                 model_params={
                     "thinking": {
@@ -543,7 +543,7 @@ class _AnthropicReasoningConfigImpl(_ModelConfigImpl):
             )
 
 
-class _OpenAiReasoningConfigImpl(_ModelConfigImpl):
+class _OpenAiReasoningModelConfig(_ModelConfigImpl):
     """A ModelConfig implementation for OpenAI reasoning models.
 
     This class extends _ModelConfigImpl to provide specialized behavior for models
@@ -557,7 +557,7 @@ class _OpenAiReasoningConfigImpl(_ModelConfigImpl):
         # Call parent class init first to set up base configuration
         super().__init__(model, weak_model, editor_model, editor_edit_format)
 
-    def map_reasoning_level(self, level: int) -> dict:
+    def map_reasoning_level_to_config(self, reasoning_level: int) -> ReasoningConfig:
         """Map an integer reasoning level to OpenAI's reasoning_effort parameter.
 
         Args:
@@ -570,14 +570,14 @@ class _OpenAiReasoningConfigImpl(_ModelConfigImpl):
         Returns:
             A dict mapping "reasoning_effort" to "low", "medium", or "high"
         """
-        level_int = int(level)
+        level_int = int(reasoning_level)
         if level_int < 0:
             effort = "low"
         elif level_int == 0:
             effort = "medium"
         else:  # level_int > 0
             effort = "high"
-        return {"reasoning_effort": effort}
+        return ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": effort})
 
 
 # https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
@@ -835,7 +835,7 @@ MODEL_SETTINGS = [
         cache_control=True,
         reminder="user",
         is_reasoning_model=True,
-        model_config_class=_AnthropicReasoningConfigImpl,
+        model_config_class=_AnthropicReasoningModelConfig,
     ),
     ModelSettings(
         "openrouter/anthropic/claude-3.7-sonnet",
@@ -855,7 +855,7 @@ MODEL_SETTINGS = [
         reminder="user",
         cache_control=True,
         is_reasoning_model=True,
-        model_config_class=_AnthropicReasoningConfigImpl,
+        model_config_class=_AnthropicReasoningModelConfig,
     ),
     ModelSettings(
         "openrouter/anthropic/claude-3.7-sonnet:beta",
@@ -875,7 +875,7 @@ MODEL_SETTINGS = [
         reminder="user",
         cache_control=True,
         is_reasoning_model=True,
-        model_config_class=_AnthropicReasoningConfigImpl,
+        model_config_class=_AnthropicReasoningModelConfig,
     ),
     ModelSettings(
         "vertex_ai/claude-3-7-sonnet@20250219",
@@ -894,7 +894,7 @@ MODEL_SETTINGS = [
         },
         reminder="user",
         is_reasoning_model=True,
-        model_config_class=_AnthropicReasoningConfigImpl,
+        model_config_class=_AnthropicReasoningModelConfig,
     ),
     ModelSettings(
         "anthropic/claude-3-haiku-20240307",
@@ -1128,7 +1128,7 @@ MODEL_SETTINGS = [
         use_temperature=False,
         streaming=True,
         is_reasoning_model=True,
-        model_config_class=_OpenAiReasoningConfigImpl,
+        model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
         "azure/o1",
@@ -1142,7 +1142,7 @@ MODEL_SETTINGS = [
         use_temperature=False,
         streaming=True,
         is_reasoning_model=True,
-        model_config_class=_OpenAiReasoningConfigImpl,
+        model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
         "o3-mini",
@@ -1156,7 +1156,7 @@ MODEL_SETTINGS = [
         use_temperature=False,
         streaming=True,
         is_reasoning_model=True,
-        model_config_class=_OpenAiReasoningConfigImpl,
+        model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
         "o1",
@@ -1170,7 +1170,7 @@ MODEL_SETTINGS = [
         use_temperature=False,
         streaming=True,
         is_reasoning_model=True,
-        model_config_class=_OpenAiReasoningConfigImpl,
+        model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
         "openai/o3-mini",
@@ -1184,7 +1184,7 @@ MODEL_SETTINGS = [
         use_temperature=False,
         streaming=True,
         is_reasoning_model=True,
-        model_config_class=_OpenAiReasoningConfigImpl,
+        model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
         "azure/o3-mini",
@@ -1198,7 +1198,7 @@ MODEL_SETTINGS = [
         use_temperature=False,
         streaming=True,
         is_reasoning_model=True,
-        model_config_class=_OpenAiReasoningConfigImpl,
+        model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
         "o1",
@@ -1212,7 +1212,7 @@ MODEL_SETTINGS = [
         use_temperature=False,
         streaming=True,
         is_reasoning_model=True,
-        model_config_class=_OpenAiReasoningConfigImpl,
+        model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
         "openrouter/openai/o1-mini",

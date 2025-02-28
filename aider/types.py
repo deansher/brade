@@ -83,7 +83,7 @@ Used by models to count tokens in various types of content:
 
 
 @dataclass
-class ReasoningResult:
+class ReasoningConfig:
     """Result from mapping a reasoning level to model-specific parameters.
     
     This class encapsulates whether a model is currently operating in reasoning mode
