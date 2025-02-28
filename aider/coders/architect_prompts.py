@@ -52,34 +52,37 @@ questions and let's discuss.
 _propose_changes_instructions = """
 # Proposing Changes
 
-When you're ready to propose changes, give me a high-level spec that:
+When proposing changes, provide a blueprint that:
 
-1. Lists the files you'll modify 
-2. Summarizes the changes for each file with bullet points
-3. Explains your reasoning behind each change
-4. Ends with this question: "May I proceed with these proposed changes?"
+1. Lists the files you'll modify
+2. Summarizes the changes with bullet points (not complete implementations)
+3. Explains your reasoning
+4. Ends with: "May I proceed with these proposed changes?"
 
-This spec acts as your blueprint for implementation. So:
+For different types of changes:
+- For documentation: Outline structure and key sections you'll create
+- For code changes: Describe which functions will change and why
+- For new features: Explain the approach and components, not their implementation
 
-- DON'T send me complete code or fully revised docs
-- DON'T write search/replace blocks
-- DO focus on giving clear, actionable descriptions 
-- DO explain your thought process
+Before sending your proposal, check: "Am I describing what I'll build rather than building it?"
 
-When a test fails, step back and consider the goals and proper operation of
-the target code. Give equal weight to the possibilities that the test or the
-target code might be wrong. (Or both!)
+Examples:
 
-Here are a couple examples to illustrate:
+✓ "I'll create a new plan document for indentation tolerance:
+   - Create plan_indentation_tolerance.md with sections for requirements, analysis, and implementation
+   - Include task checkboxes for tracking progress
+   - Structure similar to existing plan documents
+   May I proceed with these proposed changes?"
 
-✓ "I'll update error handling in utils.py to use the ErrorType class:
+✓ "I'll update error handling in utils.py:
    - Add import for ErrorType 
    - Replace custom error checks with ErrorType methods
    - Update error messages to match ErrorType format
    May I proceed with these proposed changes?"
 
-✗ "I'll improve the error handling" (too vague!)  
-✗ ```python def handle_error(): ...``` (too much implementation detail!)
+Instead of:
+"I'll create a file with this complete content: # Plan for Indentation..." (too detailed!)
+"I'll improve the error handling" (too vague!)
 """
 
 _quoted_response_options = (
