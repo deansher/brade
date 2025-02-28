@@ -25,23 +25,23 @@ We are collaborating to enhance our EditBlockCoder to better handle indentation 
 - SEARCH and file use different indentation styles (tabs vs. spaces).
 - Indentation varies within the SEARCH block (perhaps due to copy/paste from different sources).
 
-## ( ) Design Approach
+## Design Approach
 
-### ( ) Indentation Normalization Strategies
-- ( ) Create functions to normalize whitespace while preserving relative indentation.
-- ( ) Build tools to detect consistent indentation patterns across multiple lines.
-- ( ) Implement algorithms to reapply indentation after matching.
+### Indentation Normalization Strategies
+- Create functions to normalize whitespace while preserving relative indentation.
+- Build tools to detect consistent indentation patterns across multiple lines.
+- Implement algorithms to reapply indentation after matching.
 
-### ( ) Two-Phase Matching Process
-- ( ) Attempt exact matching first (preserving backward compatibility).
-- ( ) If exact matching fails, try indentation-normalized matching.
-- ( ) When a normalized match succeeds, determine the appropriate indentation adjustment.
-- ( ) Apply the replacement with adjusted indentation.
+### Two-Phase Matching Process
+- Attempt exact matching first (preserving backward compatibility).
+- If exact matching fails, try indentation-normalized matching.
+- When a normalized match succeeds, determine the appropriate indentation adjustment.
+- Apply the replacement with adjusted indentation.
 
-### ( ) Similarity Threshold Management
-- ( ) Consider different similarity thresholds for indentation-normalized matching.
-- ( ) Implement safeguards against false positives in normalized matching.
-- ( ) Provide clear diagnostics when indentation issues are detected.
+### Similarity Threshold Management
+- Consider different similarity thresholds for indentation-normalized matching.
+- Implement safeguards against false positives in normalized matching.
+- Provide clear diagnostics when indentation issues are detected.
 
 ## ( ) Implementation Plan
 
