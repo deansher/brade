@@ -27,88 +27,215 @@ We are collaborating to enhance our EditBlockCoder to better handle indentation 
 
 ## Design Approach
 
-### Indentation Normalization Strategies
-- Create functions to normalize whitespace while preserving relative indentation.
-- Build tools to detect consistent indentation patterns across multiple lines.
-- Implement algorithms to reapply indentation after matching.
+### Architecture Overview
 
-### Two-Phase Matching Process
-- Attempt exact matching first (preserving backward compatibility).
-- If exact matching fails, try indentation-normalized matching.
-- When a normalized match succeeds, determine the appropriate indentation adjustment.
-- Apply the replacement with adjusted indentation.
+We'll implement a two-phase matching approach that:
 
-### Similarity Threshold Management
-- Consider different similarity thresholds for indentation-normalized matching.
-- Implement safeguards against false positives in normalized matching.
-- Provide clear diagnostics when indentation issues are detected.
+1. **Preserves Backward Compatibility**: Always attempts exact matching first
+2. **Uses Progressive Enhancement**: Only applies normalization when needed
+3. **Maintains Clear Separation of Concerns**: Each function has a single responsibility
+4. **Provides Robust Error Handling**: Gives specific guidance for indentation issues
 
-## ( ) Implementation Plan
+The key components are:
+- **Core Indentation Utilities**: Low-level functions to analyze and manipulate indentation
+- **Indentation Pattern Analysis**: Tools to detect consistent indentation patterns
+- **Enhanced Matching Logic**: Two-phase matching process with proper indentation handling
+- **Improved Error Messages**: Specific guidance for indentation-related issues
 
-### ( ) Indentation Utilities
-- ( ) Add `normalize_indentation` function to strip consistent leading whitespace.
-- ( ) Implement `detect_indentation_pattern` to identify consistent indentation differences.
-- ( ) Create `reindent_text` to apply consistent indentation to replacement text.
+## Implementation Plan
 
-### ( ) Enhanced Matching Logic
-- ( ) Modify `replace_most_similar_chunk` to incorporate indentation-tolerant matching.
-- ( ) Add fallback path that tries normalized matching when exact matching fails.
-- ( ) Preserve indentation pattern information when a normalized match succeeds.
-- ( ) Apply appropriate indentation to replacement text.
+### Core Indentation Utilities
 
-### ( ) Improved Error Messages
-- ( ) Enhance error reporting to detect and explain indentation issues.
-- ( ) Add indentation-specific troubleshooting guidance.
-- ( ) Include indentation analysis in diagnostic output.
+#### 1. Implement `get_common_indent` Function
 
-## ( ) Testing Strategy
+```python
+def get_common_indent(lines: list[str]) -> str:
+    """
+    Find minimum common leading whitespace across non-empty lines.
+    
+    Args:
+        lines: List of strings representing lines of text
+        
+    Returns:
+        str: The common indentation string (spaces or tabs)
+    """
+```
 
-### ( ) Unit Tests
-- ( ) Test basic indentation scenarios:
-  - ( ) Matching with more indentation in SEARCH than file.
-  - ( ) Matching with less indentation in SEARCH than file.
-  - ( ) Matching with mixed indentation styles.
-- ( ) Test edge cases:
-  - ( ) Empty lines and whitespace-only lines.
-  - ( ) First line with no indentation.
-  - ( ) Inconsistent indentation within blocks.
-- ( ) Test complex scenarios:
-  - ( ) Multi-paragraph blocks with mixed content.
-  - ( ) Code with comments and blank lines.
-  - ( ) Multiple indentation changes within one block.
+- [ ] Implement function to find common leading whitespace in a list of lines
+- [ ] Handle empty lines by ignoring them in calculations
+- [ ] Return empty string if any non-empty line has no indentation
+- [ ] Add unit tests for various indentation patterns
 
-### ( ) Integration Tests
-- ( ) Verify changes don't break existing functionality.
-- ( ) Test end-to-end with realistic scenarios.
-- ( ) Add regression tests for known indentation issues.
+#### 2. Implement `strip_common_indent` Function
 
-## ( ) Detailed Implementation Tasks
+```python
+def strip_common_indent(text: str) -> tuple[str, str]:
+    """
+    Normalize indentation by removing common leading whitespace.
+    
+    Args:
+        text: Multi-line text to normalize
+        
+    Returns:
+        tuple[str, str]: (Normalized text, common indentation that was removed)
+    """
+```
 
-### ( ) Indentation Normalization
-- ( ) Implement `get_common_indent` to find minimum common whitespace.
-- ( ) Create `strip_common_indent` to normalize indentation.
-- ( ) Add `indent_lines` to apply specified indentation to text.
+- [ ] Split text into lines
+- [ ] Find common indent using get_common_indent()
+- [ ] Remove this indent from each non-empty line
+- [ ] Preserve empty lines unchanged
+- [ ] Return both normalized text and the removed common indent
+- [ ] Add unit tests for various indentation scenarios
 
-### ( ) Match With Indent Tolerance
-- ( ) Add indent-normalized variant of `replace_most_similar_chunk`.
-- ( ) Ensure indent normalization preserves blank lines.
-- ( ) Implement logic to store and apply indentation patterns.
+### Indentation Pattern Analysis
 
-### ( ) Error Handling Improvements
-- ( ) Detect when indentation appears to be the primary issue.
-- ( ) Add specific guidance for indentation problems in error messages.
-- ( ) Include normalized text comparison in detailed diagnostics.
+#### 3. Implement `detect_indent_pattern` Function
 
-## ( ) Code Review Criteria
-- ( ) Maintains backward compatibility.
-- ( ) Handles edge cases correctly.
-- ( ) Provides useful error messages.
-- ( ) Has comprehensive test coverage.
-- ( ) Follows Python best practices and project style guide.
+```python
+def detect_indent_pattern(original: str, matched: str) -> dict:
+    """
+    Analyze indentation differences between original and matched text.
+    
+    Args:
+        original: Original search text
+        matched: Text that matched in the file
+        
+    Returns:
+        dict: Indentation pattern information
+    """
+```
+
+- [ ] Compare original and matched text line-by-line
+- [ ] Detect indentation type (spaces, tabs, mixed)
+- [ ] Calculate average indentation depth 
+- [ ] Return comprehensive indentation pattern information
+- [ ] Add unit tests for different indentation patterns
+
+#### 4. Implement `reindent_text` Function
+
+```python
+def reindent_text(text: str, indent_pattern: dict) -> str:
+    """
+    Apply indentation pattern to normalized text.
+    
+    Args:
+        text: Text to reindent
+        indent_pattern: Indentation pattern dict
+        
+    Returns:
+        str: Text with applied indentation pattern
+    """
+```
+
+- [ ] Apply indentation pattern to text
+- [ ] Preserve relative indentation relationships
+- [ ] Handle empty lines appropriately
+- [ ] Add unit tests for verifying proper indentation application
+
+### Enhanced Matching Logic
+
+#### 5. Implement `normalized_match_and_replace` Function
+
+```python
+def normalized_match_and_replace(whole: str, original: str, updated: str) -> str:
+    """Match and replace with normalization of indentation."""
+```
+
+- [ ] Normalize indentation in search text and file content
+- [ ] Find match locations in normalized texts
+- [ ] Determine original indentation pattern at match location
+- [ ] Apply equivalent indentation to replacement text
+- [ ] Perform replacement with properly indented text
+- [ ] Add unit tests for indentation-aware matching
+
+#### 6. Modify `replace_most_similar_chunk` Function
+
+- [ ] First try exact matching (current behavior)
+- [ ] On failure, try indentation-normalized matching
+- [ ] Maintain high threshold (95%) for both methods
+- [ ] Return early if exact matching succeeds
+- [ ] Add unit tests to verify the two-phase approach
+
+#### 7. Update `do_replace` Function
+
+- [ ] Pass appropriate context to replace_most_similar_chunk
+- [ ] Ensure proper handling of indentation information
+- [ ] Add unit tests for indentation-aware replacements
+
+### Error Reporting Improvements
+
+#### 8. Update `_build_failed_edit_error_message` Method
+
+- [ ] Detect when indentation appears to be the main issue
+- [ ] Add specific guidance for indentation problems
+- [ ] Include normalized text comparison in diagnostics
+- [ ] Update error message templates for indentation-specific advice
+- [ ] Add unit tests for indentation-specific error messages
+
+## Testing Strategy
+
+### Unit Tests
+
+#### Core Indentation Utilities Tests
+
+- [ ] Test `get_common_indent` with:
+  - [ ] Consistent indentation
+  - [ ] Varying indentation
+  - [ ] Mix of empty and non-empty lines
+  - [ ] Tabs vs spaces indentation
+  - [ ] No indentation
+  - [ ] Edge cases (single line, empty input)
+
+- [ ] Test `strip_common_indent` with similar variations
+
+#### Indentation Pattern Detection Tests
+
+- [ ] Test `detect_indent_pattern` with:
+  - [ ] More indentation in SEARCH than file
+  - [ ] Less indentation in SEARCH than file
+  - [ ] Different indentation types (spaces vs tabs)
+  - [ ] Mixed indentation styles
+  - [ ] Complex multi-level indentation
+
+- [ ] Test `reindent_text` with similar variations
+
+#### Enhanced Matching Tests
+
+- [ ] Test both phases of matching:
+  - [ ] Exact matches (should use fast path)
+  - [ ] Indentation-only differences (should normalize)
+  - [ ] Cases with both content and indentation differences
+
+#### Error Message Tests
+
+- [ ] Test improved error messages for:
+  - [ ] Indentation-only failures
+  - [ ] Mixed content and indentation failures
+  - [ ] Verify helpful guidance is provided
+
+### Integration Tests
+
+- [ ] Test end-to-end process with:
+  - [ ] Real-world code examples
+  - [ ] Complex indentation patterns
+  - [ ] Multi-paragraph blocks
+  - [ ] Multiple language types
+
+- [ ] Regression tests for known indentation issues
+
+## Code Review Criteria
+
+- [ ] Maintains backward compatibility
+- [ ] Handles edge cases correctly
+- [ ] Provides useful error messages
+- [ ] Has comprehensive test coverage
+- [ ] Follows Python best practices and project style guide
 
 ## Future Considerations
-1. Consider extending this approach to handle other whitespace variations (line endings, trailing spaces).
-2. Explore optional auto-correction for simple indentation issues.
-3. Add configuration options for indentation sensitivity levels.
-4. Investigate more sophisticated pattern recognition for complex indentation issues.
-5. Consider visual diffing in error outputs to better illustrate indentation problems.
+
+1. Extend this approach to handle other whitespace variations (line endings, trailing spaces)
+2. Explore optional auto-correction for simple indentation issues
+3. Add configuration options for indentation sensitivity levels
+4. Investigate more sophisticated pattern recognition for complex indentation issues
+5. Consider visual diffing in error outputs to better illustrate indentation problems
