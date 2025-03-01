@@ -46,7 +46,7 @@ The key components are:
 
 ### Core Indentation Utilities
 
-#### 1. Implement `get_common_indent` Function
+#### ( ) Implement `get_common_indent` Function
 
 ```python
 def get_common_indent(lines: list[str]) -> str:
@@ -61,12 +61,12 @@ def get_common_indent(lines: list[str]) -> str:
     """
 ```
 
-- [ ] Implement function to find common leading whitespace in a list of lines
-- [ ] Handle empty lines by ignoring them in calculations
-- [ ] Return empty string if any non-empty line has no indentation
-- [ ] Add unit tests for various indentation patterns
+- ( ) Implement function to find common leading whitespace in a list of lines
+- ( ) Handle empty lines by ignoring them in calculations
+- ( ) Return empty string if any non-empty line has no indentation
+- ( ) Add unit tests for various indentation patterns
 
-#### 2. Implement `strip_common_indent` Function
+#### ( )Implement `strip_common_indent` Function
 
 ```python
 def strip_common_indent(text: str) -> tuple[str, str]:
@@ -81,16 +81,16 @@ def strip_common_indent(text: str) -> tuple[str, str]:
     """
 ```
 
-- [ ] Split text into lines
-- [ ] Find common indent using get_common_indent()
-- [ ] Remove this indent from each non-empty line
-- [ ] Preserve empty lines unchanged
-- [ ] Return both normalized text and the removed common indent
-- [ ] Add unit tests for various indentation scenarios
+- ( ) Split text into lines
+- ( ) Find common indent using get_common_indent()
+- ( ) Remove this indent from each non-empty line
+- ( ) Preserve empty lines unchanged
+- ( ) Return both normalized text and the removed common indent
+- ( ) Add unit tests for various indentation scenarios
 
 ### Indentation Pattern Analysis
 
-#### 3. Implement `detect_indent_pattern` Function
+#### ( )Implement `detect_indent_pattern` Function
 
 ```python
 def detect_indent_pattern(original: str, matched: str) -> dict:
@@ -106,13 +106,13 @@ def detect_indent_pattern(original: str, matched: str) -> dict:
     """
 ```
 
-- [ ] Compare original and matched text line-by-line
-- [ ] Detect indentation type (spaces, tabs, mixed)
-- [ ] Calculate average indentation depth 
-- [ ] Return comprehensive indentation pattern information
-- [ ] Add unit tests for different indentation patterns
+- ( ) Compare original and matched text line-by-line
+- ( ) Detect indentation type (spaces, tabs, mixed)
+- ( ) Calculate average indentation depth 
+- ( ) Return comprehensive indentation pattern information
+- ( ) Add unit tests for different indentation patterns
 
-#### 4. Implement `reindent_text` Function
+#### ( )Implement `reindent_text` Function
 
 ```python
 def reindent_text(text: str, indent_pattern: dict) -> str:
@@ -128,109 +128,109 @@ def reindent_text(text: str, indent_pattern: dict) -> str:
     """
 ```
 
-- [ ] Apply indentation pattern to text
-- [ ] Preserve relative indentation relationships
-- [ ] Handle empty lines appropriately
-- [ ] Add unit tests for verifying proper indentation application
+- ( ) Apply indentation pattern to text
+- ( ) Preserve relative indentation relationships
+- ( ) Handle empty lines appropriately
+- ( ) Add unit tests for verifying proper indentation application
 
 ### Enhanced Matching Logic
 
-#### 5. Implement `normalized_match_and_replace` Function
+#### ( )Implement `normalized_match_and_replace` Function
 
 ```python
 def normalized_match_and_replace(whole: str, original: str, updated: str) -> str:
     """Match and replace with normalization of indentation."""
 ```
 
-- [ ] Normalize indentation in search text and file content
-- [ ] Find match locations in normalized texts
-- [ ] Determine original indentation pattern at match location
-- [ ] Apply equivalent indentation to replacement text
-- [ ] Perform replacement with properly indented text
-- [ ] Add unit tests for indentation-aware matching
+- ( ) Normalize indentation in search text and file content
+- ( ) Find match locations in normalized texts
+- ( ) Determine original indentation pattern at match location
+- ( ) Apply equivalent indentation to replacement text
+- ( ) Perform replacement with properly indented text
+- ( ) Add unit tests for indentation-aware matching
 
-#### 6. Modify `replace_most_similar_chunk` Function
+#### ( ) Modify `replace_most_similar_chunk` Function
 
-- [ ] First try exact matching (current behavior)
-- [ ] On failure, try indentation-normalized matching
-- [ ] Maintain high threshold (95%) for both methods
-- [ ] Return early if exact matching succeeds
-- [ ] Add unit tests to verify the two-phase approach
+- ( ) First try exact matching (current behavior)
+- ( ) On failure, try indentation-normalized matching
+- ( ) Maintain high threshold (95%) for both methods
+- ( ) Return early if exact matching succeeds
+- ( ) Add unit tests to verify the two-phase approach
 
-#### 7. Update `do_replace` Function
+#### ( ) Update `do_replace` Function
 
-- [ ] Pass appropriate context to replace_most_similar_chunk
-- [ ] Ensure proper handling of indentation information
-- [ ] Add unit tests for indentation-aware replacements
+- ( ) Pass appropriate context to replace_most_similar_chunk
+- ( ) Ensure proper handling of indentation information
+- ( ) Add unit tests for indentation-aware replacements
 
 ### Error Reporting Improvements
 
-#### 8. Update `_build_failed_edit_error_message` Method
+#### ( ) Update `_build_failed_edit_error_message` Method
 
-- [ ] Detect when indentation appears to be the main issue
-- [ ] Add specific guidance for indentation problems
-- [ ] Include normalized text comparison in diagnostics
-- [ ] Update error message templates for indentation-specific advice
-- [ ] Add unit tests for indentation-specific error messages
+- ( ) Detect when indentation appears to be the main issue
+- ( ) Add specific guidance for indentation problems
+- ( ) Include normalized text comparison in diagnostics
+- ( ) Update error message templates for indentation-specific advice
+- ( ) Add unit tests for indentation-specific error messages
 
 ## Testing Strategy
 
 ### Unit Tests
 
-#### Core Indentation Utilities Tests
+#### ( ) Core Indentation Utilities Tests
 
-- [ ] Test `get_common_indent` with:
-  - [ ] Consistent indentation
-  - [ ] Varying indentation
-  - [ ] Mix of empty and non-empty lines
-  - [ ] Tabs vs spaces indentation
-  - [ ] No indentation
-  - [ ] Edge cases (single line, empty input)
+- ( ) Test `get_common_indent` with:
+  - ( ) Consistent indentation
+  - ( ) Varying indentation
+  - ( ) Mix of empty and non-empty lines
+  - ( ) Tabs vs spaces indentation
+  - ( ) No indentation
+  - ( ) Edge cases (single line, empty input)
 
-- [ ] Test `strip_common_indent` with similar variations
+- ( ) Test `strip_common_indent` with similar variations
 
-#### Indentation Pattern Detection Tests
+#### ( ) Indentation Pattern Detection Tests
 
-- [ ] Test `detect_indent_pattern` with:
-  - [ ] More indentation in SEARCH than file
-  - [ ] Less indentation in SEARCH than file
-  - [ ] Different indentation types (spaces vs tabs)
-  - [ ] Mixed indentation styles
-  - [ ] Complex multi-level indentation
+- ( ) Test `detect_indent_pattern` with:
+  - ( ) More indentation in SEARCH than file
+  - ( ) Less indentation in SEARCH than file
+  - ( ) Different indentation types (spaces vs tabs)
+  - ( ) Mixed indentation styles
+  - ( ) Complex multi-level indentation
 
-- [ ] Test `reindent_text` with similar variations
+- ( ) Test `reindent_text` with similar variations
 
-#### Enhanced Matching Tests
+#### ( ) Enhanced Matching Tests
 
-- [ ] Test both phases of matching:
-  - [ ] Exact matches (should use fast path)
-  - [ ] Indentation-only differences (should normalize)
-  - [ ] Cases with both content and indentation differences
+- ( ) Test both phases of matching:
+  - ( ) Exact matches (should use fast path)
+  - ( ) Indentation-only differences (should normalize)
+  - ( ) Cases with both content and indentation differences
 
-#### Error Message Tests
+#### ( ) Error Message Tests
 
-- [ ] Test improved error messages for:
-  - [ ] Indentation-only failures
-  - [ ] Mixed content and indentation failures
-  - [ ] Verify helpful guidance is provided
+- ( ) Test improved error messages for:
+  - ( ) Indentation-only failures
+  - ( ) Mixed content and indentation failures
+  - ( ) Verify helpful guidance is provided
 
-### Integration Tests
+### ( ) Integration Tests
 
-- [ ] Test end-to-end process with:
-  - [ ] Real-world code examples
-  - [ ] Complex indentation patterns
-  - [ ] Multi-paragraph blocks
-  - [ ] Multiple language types
+- ( ) Test end-to-end process with:
+  - ( ) Real-world code examples
+  - ( ) Complex indentation patterns
+  - ( ) Multi-paragraph blocks
+  - ( ) Multiple language types
 
-- [ ] Regression tests for known indentation issues
+- ( ) Regression tests for known indentation issues
 
 ## Code Review Criteria
 
-- [ ] Maintains backward compatibility
-- [ ] Handles edge cases correctly
-- [ ] Provides useful error messages
-- [ ] Has comprehensive test coverage
-- [ ] Follows Python best practices and project style guide
+- Maintains backward compatibility
+- Handles edge cases correctly
+- Provides useful error messages
+- Has comprehensive test coverage
+- Follows Python best practices and project style guide
 
 ## Future Considerations
 
