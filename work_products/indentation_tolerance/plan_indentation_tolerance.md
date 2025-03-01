@@ -103,7 +103,7 @@ def normalized_match_and_replace(file_content: str, search_text: str, replace_te
     
     # Configure the matcher
     dmp.Match_Threshold = similarity_threshold
-    dmp.Match_Distance = 1000  # Adjust as needed
+    dmp.Match_Distance = sys.maxsize  # Allow matches anywhere in file
     
     # Find the best match location
     match_loc = dmp.match_main(normalized_file, normalized_search, 0)
@@ -260,6 +260,223 @@ def apply_indentation_pattern(text: str, pattern: dict) -> str:
         result_lines.append(f"{line_indent}{line.lstrip()}")
     
     return '\n'.join(result_lines)
+
+## Refined Approach: Encoding Indentation Changes
+
+After extensive analysis, we've developed an elegant approach that handles all common indentation mismatch cases:
+1. Correctly indented SEARCH blocks (current behavior)
+2. Single-line SEARCH blocks with incorrect indentation
+3. Multi-line SEARCH blocks with consistent indentation shifts
+
+### Key Concept: First-Line-Independent Indentation Encoding
+
+The key insight is to encode the *change* in indentation for each line (except the first line of the SEARCH block) while performing character-level matching:
+
+```python
+def example():
+    x = 1
+    if x > 0:
+        print("positive")
+    else:
+        print("non-positive")
+```
+
+Would be encoded as:
+
+```
+def example():
+[[++++]]x = 1
+[[=]]if x > 0:
+[[++++]]print("positive")
+[[----]]else:
+[[++++]]print("non-positive")
+```
+
+Where we use:
+- `[[++++]]` to represent "indent increased by 4 spaces"
+- `[[----]]` to represent "indent decreased by 4 spaces"
+- `[[=]]` to represent "same indentation as previous line"
+
+This approach:
+1. **Skips encoding the first line** of the SEARCH block, solving the "unknown starting indentation" problem
+2. **Preserves relative structure** between lines using character sequences
+3. **Works at character level** with existing diff-match-patch algorithm
+4. **Handles single-line blocks naturally** (no indentation encoding needed)
+5. **Tolerates rigid indentation shifts** in either direction
+
+### Normalized Matching Algorithm
+
+```python
+def normalized_match_and_replace(file_content: str, search_text: str, replace_text: str, 
+                               similarity_threshold: float = 0.5) -> tuple[str, bool]:
+    """
+    Match and replace with indentation tolerance.
+    
+    Args:
+        file_content: The entire file content to search within
+        search_text: The text to search for (may have different indentation)
+        replace_text: The text to replace the matched content with
+        similarity_threshold: Minimum similarity score required for a match
+        
+    Returns:
+        tuple[str, bool]: (Modified file content, success flag)
+    """
+    # Phase 1: Encode indentation changes, skipping first line of search
+    # -----------------------------------------------------------------
+    normalized_file = encode_indentation_changes(file_content, skip_first=False)
+    normalized_search = encode_indentation_changes(search_text, skip_first=True)
+    
+    # Phase 2: Use diff-match-patch for character-level matching
+    # ---------------------------------------------------------
+    dmp = diff_match_patch()
+    dmp.Match_Threshold = similarity_threshold
+    dmp.Match_Distance = sys.maxsize  # Allow matches anywhere in file
+    
+    # Find match location
+    match_loc = dmp.match_main(normalized_file, normalized_search, 0)
+    
+    if match_loc == -1:
+        return file_content, False
+        
+    # Phase 3: Map match to original positions
+    # ---------------------------------------
+    # We need to track character positions between original and normalized text
+    file_pos_map = build_position_mapping(file_content, normalized_file)
+    
+    # Find the start position in original text
+    start_pos = file_pos_map[match_loc]
+    
+    # Find match end (similar to existing find_match_end function)
+    match_end_loc = find_match_end(dmp, normalized_file, match_loc, normalized_search)
+    end_pos = file_pos_map[match_end_loc]
+    
+    # Phase 4: Extract matched region and prepare replacement
+    # -----------------------------------------------------
+    # Get the matched text from the original file
+    matched_region = file_content[start_pos:end_pos]
+    
+    # Analyze indentation pattern of matched region
+    indent_pattern = analyze_indentation_pattern(matched_region)
+    
+    # Apply appropriate indentation to replacement text
+    indented_replacement = apply_indentation_pattern(replace_text, indent_pattern)
+    
+    # Phase 5: Perform replacement
+    # ---------------------------
+    result = file_content[:start_pos] + indented_replacement + file_content[end_pos:]
+    
+    return result, True
+
+def encode_indentation_changes(text: str, skip_first: bool = False) -> str:
+    """
+    Encode indentation changes between consecutive lines.
+    
+    Args:
+        text: Source text to encode
+        skip_first: Whether to skip encoding the first line
+        
+    Returns:
+        str: Text with indentation change markers
+    """
+    lines = text.splitlines()
+    if not lines:
+        return ""
+        
+    normalized_lines = []
+    
+    # First line handling depends on skip_first flag
+    if skip_first:
+        normalized_lines.append(lines[0])  # Keep first line as is
+        prev_indent = len(lines[0]) - len(lines[0].lstrip())
+        start_idx = 1
+    else:
+        # For file content, encode all lines including first
+        prev_indent = 0
+        start_idx = 0
+    
+    # Process remaining lines
+    for i in range(start_idx, len(lines)):
+        line = lines[i]
+        if not line.strip():
+            # Preserve empty lines without markers
+            normalized_lines.append(line)
+            continue
+            
+        # Calculate current indentation
+        current_indent = len(line) - len(line.lstrip())
+        
+        # Calculate change from previous non-empty line
+        indent_change = current_indent - prev_indent
+        
+        # Create marker based on indent change
+        if indent_change > 0:
+            marker = f"[[{'+'*indent_change}]]"
+        elif indent_change < 0:
+            marker = f"[[{'-'*abs(indent_change)}]]"
+        else:
+            marker = "[[=]]"
+            
+        # Update for next line
+        prev_indent = current_indent
+        
+        # Add normalized line
+        normalized_lines.append(f"{marker}{line.lstrip()}")
+    
+    return '\n'.join(normalized_lines)
+
+def build_position_mapping(original_text: str, normalized_text: str) -> dict:
+    """
+    Build a mapping from positions in normalized text to original text.
+    
+    Args:
+        original_text: Original source text
+        normalized_text: Text with indentation markers
+        
+    Returns:
+        dict: Mapping of positions {normalized_pos: original_pos}
+    """
+    # This function tracks how character positions map between
+    # the normalized text and the original text
+    # Implementation details depend on exact normalization format
+    
+    # Simple pseudocode for now - actual implementation will be more complex
+    mapping = {}
+    orig_pos = 0
+    norm_pos = 0
+    
+    # Track position differences line by line
+    orig_lines = original_text.splitlines(keepends=True)
+    norm_lines = normalized_text.splitlines(keepends=True)
+    
+    for orig_line, norm_line in zip(orig_lines, norm_lines):
+        # Check if this line has a marker
+        marker_match = re.match(r"\[\[([\+=\-]+)\]\]", norm_line)
+        offset = 0
+        
+        if marker_match:
+            # Skip marker in normalized text
+            offset = len(marker_match.group(0))
+            
+        # Map positions for this line
+        for i in range(len(norm_line) - offset):
+            mapping[norm_pos + offset + i] = orig_pos + i
+            
+        # Update positions for next line
+        orig_pos += len(orig_line)
+        norm_pos += len(norm_line)
+    
+    return mapping
+
+### Advantages of This Approach
+
+1. **Handles all indentation cases**: Works whether SEARCH block is correctly indented, single-line, or shifted
+2. **Character-level matching**: Leverages existing diff-match-patch character matching
+3. **No special cases needed**: Single unified algorithm for all scenarios
+4. **First-line independence**: No need to anchor on the first line's indentation
+5. **Compatible with existing code**: Still performs fuzzy matching with the current system
+6. **Simple and elegant**: Clean conceptual model that's easy to understand
+
+This approach elegantly solves the indentation tolerance challenge while maintaining the existing strengths of our search/replace implementation.
 
 ## Implementation Plan
 
