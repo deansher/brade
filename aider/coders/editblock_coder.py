@@ -35,9 +35,10 @@ class SearchReplaceBlockParseError(Exception):
     - Other syntax/format violations
     """
 
-    def __init__(self, message, path=None):
+    def __init__(self, message, path=None, content=None):
         super().__init__(message)
         self.path = path
+        self.content = content  # Store the problematic content
 
 
 class NoExactMatchError(Exception):
@@ -148,7 +149,7 @@ class EditBlockCoder(Coder):
                 "- Ensure each block has exactly one SEARCH, DIVIDER, and REPLACE marker in that order.",
                 "- Check that markers are spelled correctly: <<<<<<< SEARCH, =======, >>>>>>> REPLACE",
                 "- Verify the file path is on its own line before the opening fence.",
-                "- Make sure the code fence markers (```) are properly placed.",
+                "- Make sure the code fence markers are properly placed.",
             ],
         },
     }
@@ -188,8 +189,9 @@ class EditBlockCoder(Coder):
             return edits
 
         except SearchReplaceBlockParseError as exc:
-            # Use the path from the exception if available, don't try to parse it from the error message
+            # Use the explicit path and content from the exception
             path = getattr(exc, 'path', None)
+            error_content = getattr(exc, 'content', None)
             
             failed = [
                 {
@@ -359,6 +361,7 @@ class EditBlockCoder(Coder):
         - missing_filename: Path is missing or invalid
         - no_match: SEARCH text didn't match file content
         - multiple_matches: SEARCH text matched multiple locations
+        - parse_error: Syntax or validation errors in the SEARCH/REPLACE block
 
         For no_match errors, it attempts to find similar content and shows:
         - Similarity percentage
@@ -390,23 +393,35 @@ class EditBlockCoder(Coder):
             updated = item["updated"]
             error_type = item.get("error_type", "no_match")
             error_context = item.get("error_context", None)
-            full_path = self.abs_root_path(path)
-            content = self.io.read_text(full_path)
-
+            
             # Start a new message section for this failing block
             block_message = []
             block_message.append(
-                f"## SearchReplace{error_type.title()}: The {error_type} error occurred in {path}"
+                f"## SearchReplace{error_type.title()}: The {error_type} error occurred" + 
+                (f" in {path}" if path else "")
             )
+            
+            # Get file content for non-parse errors
+            full_path = None
+            content = None
+            if path and error_type != "parse_error":
+                full_path = self.abs_root_path(path)
+                content = self.io.read_text(full_path)
 
-            # Show the entire failing SEARCH/REPLACE block
-            block_message.append("### Offending SEARCH/REPLACE Block")
-            block_message.append(
-                f"{path}\n"
-                f"{self.fence[0]}python\n"
-                f"<<<<<<< SEARCH\n{original}=======\n{updated}>>>>>>> REPLACE\n"
-                f"{self.fence[1]}"
-            )
+            # Different handling for parse errors vs. other errors
+            if error_type == "parse_error":
+                # For parse errors, show the error message instead of an empty block
+                block_message.append("### Error Details")
+                block_message.append(f"```\n{error_context}\n```")
+            else:
+                # Show the failing SEARCH/REPLACE block for other error types
+                block_message.append("### Offending SEARCH/REPLACE Block")
+                block_message.append(
+                    f"{path}\n"
+                    f"{self.fence[0]}python\n"
+                    f"<<<<<<< SEARCH\n{original}=======\n{updated}>>>>>>> REPLACE\n"
+                    f"{self.fence[1]}"
+                )
 
             # Explain why it failed
             block_message.append("### Why This Failed")
@@ -500,6 +515,23 @@ class EditBlockCoder(Coder):
             block_message.extend(how_to_fix)
 
             messages.append("\n\n".join(block_message))
+
+        # Add a correct format example for parse errors
+        if any(item.get("error_type") == "parse_error" for item in failed):
+            messages.append("\n## Correct Format Example")
+            example = (
+                f"filename.py\n"
+                f"{self.fence[0]}python\n"
+                f"<<<<<<< SEARCH\n"
+                f"def example():\n"
+                f"    return True\n"
+                f"=======\n"
+                f"def example():\n"
+                f"    return False\n"
+                f">>>>>>> REPLACE\n"
+                f"{self.fence[1]}"
+            )
+            messages.append(example)
 
         # Summaries
         summary = []
