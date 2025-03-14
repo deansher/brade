@@ -552,7 +552,7 @@ class EditBlockCoder(Coder):
         if any(item.get("error_type") == "parse_error" for item in failed):
             messages.append("\n## Correct Format Example")
             example = (
-                f"filename.py\n"
+                f"src/utils/example.py\n"
                 f"{self.fence[0]}python\n"
                 f"<<<<<<< SEARCH\n"
                 f"def example():\n"
