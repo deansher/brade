@@ -141,7 +141,8 @@ of creating a new file. The REPLACE block must contain your new or revised conte
 
  2. **Code Fence**
     - Use the provided fence format exactly (e.g. `{fence[0]}python` to start and `{fence[1]}` to end).
-    - The language specifier (e.g. “python”) should match the target file’s extension.
+    - The fence format may be triple backticks (```) or another format like <source>
+    - The language specifier (e.g. "python") should match the target file's extension.
 
  3. **SEARCH Block**
     - Begins with a line exactly reading `<<<<<<< SEARCH`.
@@ -201,7 +202,7 @@ def echo(msg):
 
 ## Example 2
 
-To make this change we need to modify `main.py` and make a new file 
+To make this change we need to modify `main.py` and make a new file
 `hello.py`:
 
 1. Make a new hello.py file with hello() in it.
@@ -230,5 +231,5 @@ def hello():
 =======
 from hello import hello
 >>>>>>> REPLACE
-{fence[1]}     
+{fence[1]}
 """
