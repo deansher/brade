@@ -25,6 +25,14 @@ class SearchReplaceImplementationError(Exception):
     pass
 
 
+class FileNotInContextError(Exception):
+    """Raised when a SEARCH/REPLACE block refers to a file not available in context."""
+    def __init__(self, path):
+        message = f"The file '{path}' is not available in the current context."
+        super().__init__(message)
+        self.path = path
+
+
 class SearchReplaceBlockParseError(Exception):
     """Raised when a SEARCH/REPLACE block has syntax or validation errors.
 
@@ -127,6 +135,18 @@ class EditBlockCoder(Coder):
                 "- Double-check for typos in the filename and path.",
             ],
         },
+        "file_not_in_context": {
+            "why_failed": [
+                "- The file isn't included in the <brade:context> section.",
+                "- We can only edit files that are provided in context.",
+            ],
+            "how_to_fix": [
+                "- Ask your partner to share this file.",
+                "- Use the appropriate command to add the file to context.",
+                "- Check for typos in the filename and path.",
+                "- If creating a new file, ensure it has a valid file extension.",
+            ],
+        },
         "no_match": {
             "why_failed": [
                 "- The SEARCH text did not match exactly.",
@@ -188,6 +208,18 @@ class EditBlockCoder(Coder):
 
             return edits
 
+        except FileNotInContextError as exc:
+            failed = [
+                {
+                    "path": exc.path,
+                    "original": "",
+                    "updated": "",
+                    "error_type": "file_not_in_context",
+                    "error_context": str(exc),
+                }
+            ]
+            raise EditBlockError(self._build_failed_edit_error_message(failed, []))
+            
         except SearchReplaceBlockParseError as exc:
             # Use the explicit path and content from the exception
             path = getattr(exc, 'path', None)
@@ -927,6 +959,7 @@ def find_original_update_blocks(content, fence=DEFAULT_FENCE, valid_fnames=None)
     - The path can be relative to project root
     - The path must be valid (either match an existing file or be a new file path)
     - For existing files, path must match a filename in valid_fnames
+      or a FileNotInContextError will be raised
 
     Block Structure Requirements:
     - Opening fence (e.g. ```python) - language specifier is optional
@@ -951,6 +984,9 @@ def find_original_update_blocks(content, fence=DEFAULT_FENCE, valid_fnames=None)
         content (str): The content to parse for search/replace blocks
         fence (tuple): Opening and closing fence markers
         valid_fnames (list): Combined list of editable and read-only filenames that can be edited
+        
+    Raises:
+        FileNotInContextError: If a file path is specified that isn't in valid_fnames
     """
     # First validate overall marker ordering
     check_marker_order(content)
@@ -1081,6 +1117,9 @@ def find_filename(line, valid_fnames):
 
     Returns:
         str: The found filename, or None if no valid filename found
+        
+    Raises:
+        FileNotInContextError: If the filename has a valid syntax but is not in valid_fnames
     """
     filename = strip_filename(line)
     if not filename:
@@ -1096,6 +1135,10 @@ def find_filename(line, valid_fnames):
         for valid_fname in valid_fnames:
             if filename == Path(valid_fname).name:
                 return valid_fname
+        
+        # If it looks like a file path but doesn't match any valid files
+        if "." in filename:
+            raise FileNotInContextError(filename)
 
     # For new files, require a file extension
     elif "." in filename:
