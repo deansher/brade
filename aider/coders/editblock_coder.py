@@ -914,7 +914,7 @@ def check_marker_order(content):
             raise SearchReplaceBlockParseError(
                 f"Found '<<<<<<< SEARCH' on line {i} but previous block was not complete:\n"
                 f"{context}\n"
-                f"Each block must have exactly one SEARCH, DIVIDER, and REPLACE marker in that order."
+                "Each block must have exactly one SEARCH, DIVIDER, and REPLACE marker in that order."
             )
         elif is_divider and state == 1:
             state = 2
@@ -923,7 +923,7 @@ def check_marker_order(content):
             raise SearchReplaceBlockParseError(
                 f"Found '=======' on line {i} but not preceded by SEARCH marker:\n"
                 f"{context}\n"
-                f"Each block must have exactly one SEARCH, DIVIDER, and REPLACE marker in that order."
+                "Each block must have exactly one SEARCH, DIVIDER, and REPLACE marker in that order."
             )
         elif is_updated and state == 2:
             state = 0
@@ -932,7 +932,7 @@ def check_marker_order(content):
             raise SearchReplaceBlockParseError(
                 f"Found '>>>>>>> REPLACE' on line {i} but not preceded by DIVIDER:\n"
                 f"{context}\n"
-                f"Each block must have exactly one SEARCH, DIVIDER, and REPLACE marker in that order."
+                "Each block must have exactly one SEARCH, DIVIDER, and REPLACE marker in that order."
             )
 
     if state == 1:
