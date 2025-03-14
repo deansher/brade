@@ -861,10 +861,10 @@ missing_file_path_err = (
 
 
 def strip_filename(filename):
-    """Clean up a filename by stripping certain surrounding characters.
+    """Clean up a file path by stripping certain surrounding characters.
 
     Returns:
-        str: the filename with strippable characters stripped, which might then be empty
+        str: the file path with strippable characters stripped, which might then be empty
     """
     filename = filename.strip()
     if filename.startswith("#"):
@@ -1049,9 +1049,9 @@ def find_original_update_blocks(content, fence=DEFAULT_FENCE, valid_fnames=None)
                         f"{lines[i - 1]!r}\n"
                     )
 
-                filename_line = lines[i - 2]
-                if not strip_filename(filename_line) and i >= 3:
-                    filename_line = lines[i - 3]
+                filepath_line = lines[i - 2]
+                if not strip_filename(filepath_line) and i >= 3:
+                    filepath_line = lines[i - 3]
                 is_new_file = i + 1 < len(lines) and divider_pattern.match(
                     lines[i + 1].strip()
                 )
@@ -1059,8 +1059,8 @@ def find_original_update_blocks(content, fence=DEFAULT_FENCE, valid_fnames=None)
                     use_valid_fnames = None
                 else:
                     use_valid_fnames = valid_fnames
-                filename = find_filename(filename_line, use_valid_fnames)
-                if not filename:
+                filepath = find_filepath(filepath_line, use_valid_fnames)
+                if not filepath:
                     raise SearchReplaceBlockParseError(
                         missing_file_path_err.format(fence=fence)
                     )
@@ -1091,7 +1091,7 @@ def find_original_update_blocks(content, fence=DEFAULT_FENCE, valid_fnames=None)
                         f"Expected `{UPDATED_ERR}` or `{DIVIDER_ERR}`"
                     )
 
-                yield filename, "".join(original_text), "".join(updated_text)
+                yield filepath, "".join(original_text), "".join(updated_text)
 
             except SearchReplaceBlockParseError as e:
                 processed = "".join(lines[: i + 1])
@@ -1101,22 +1101,22 @@ def find_original_update_blocks(content, fence=DEFAULT_FENCE, valid_fnames=None)
         i += 1
 
 
-def looks_like_filename(filename):
-    """Determine if a string looks like a valid filename.
+def looks_like_filepath(filepath):
+    """Determine if a string looks like a valid file path.
     
-    Uses several heuristics to check if a string appears to be a valid filename:
+    Uses several heuristics to check if a string appears to be a valid file path:
     1. Has a file extension
     2. Matches a known extensionless file pattern
     3. Contains path separators
     
     Args:
-        filename (str): The string to check
+        filepath (str): The string to check
         
     Returns:
-        bool: True if the string appears to be a valid filename
+        bool: True if the string appears to be a valid file path
     """
     # Check for file extension (most common case)
-    if Path(filename).suffix:
+    if Path(filepath).suffix:
         return True
         
     # Check for common extensionless files
@@ -1126,61 +1126,60 @@ def looks_like_filename(filename):
     }
     
     # Get the last part of the path (handles both "folder/file" and just "file")
-    basename = Path(filename).name
+    basename = Path(filepath).name
     
     # Known extensionless files or hidden files (starting with .)
     if basename in known_extensionless or basename.startswith('.'):
         return True
     
     # If it has path separators, it looks like a file path
-    if '/' in filename or '\\' in filename:
+    if '/' in filepath or '\\' in filepath:
         return True
         
     return False
 
 
-def find_filename(line, valid_fnames):
-    """Find a filename in line.
+def find_filepath(line, valid_fnames):
+    """Find a file path in line.
 
-    The filename must be alone on the line, optionally preceded by # or
+    The file path must be alone on the line, optionally preceded by # or
     surrounded by backticks.
 
-    If valid_fnames is provided, the stripped filename must be in the list.
+    If valid_fnames is provided, the stripped file path must be in the list.
 
     Args:
-        lines (list): the lines that may contain the filename in priority order
-        fence (tuple): Opening and closing fence markers
-        valid_fnames (list): List of valid filenames to match against
-           If empty or not provided, then any syntactically valid filename is accepted.
+        line (str): the line that may contain the file path
+        valid_fnames (list): List of valid file paths to match against
+           If empty or not provided, then any syntactically valid file path is accepted.
 
     Returns:
-        str: The found filename, or None if no valid filename found
+        str: The found file path, or None if no valid file path found
         
     Raises:
-        FileNotInContextError: If the filename has a valid syntax but is not in valid_fnames
+        FileNotInContextError: If the file path has a valid syntax but is not in valid_fnames
     """
-    filename = strip_filename(line)
-    if not filename:
+    filepath = strip_filename(line)
+    if not filepath:
         return None
 
     # For existing files, require an exact match
     if valid_fnames:
         # Check for exact match first
-        if filename in valid_fnames:
-            return filename
+        if filepath in valid_fnames:
+            return filepath
 
         # Check for basename match
         for valid_fname in valid_fnames:
-            if filename == Path(valid_fname).name:
+            if filepath == Path(valid_fname).name:
                 return valid_fname
         
         # If it looks like a file path but doesn't match any valid files
-        if looks_like_filename(filename):
-            raise FileNotInContextError(filename)
+        if looks_like_filepath(filepath):
+            raise FileNotInContextError(filepath)
 
-    # For new files, require a valid filename pattern
-    elif looks_like_filename(filename):
-        return filename
+    # For new files, require a valid file path pattern
+    elif looks_like_filepath(filepath):
+        return filepath
 
     return None
 
