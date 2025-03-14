@@ -35,7 +35,9 @@ class SearchReplaceBlockParseError(Exception):
     - Other syntax/format violations
     """
 
-    pass
+    def __init__(self, message, path=None):
+        super().__init__(message)
+        self.path = path
 
 
 class NoExactMatchError(Exception):
@@ -186,15 +188,9 @@ class EditBlockCoder(Coder):
             return edits
 
         except SearchReplaceBlockParseError as exc:
-            # Extract path from error message if available
-            path = None
-            lines = str(exc).splitlines()
-            if lines and not any(
-                marker in lines[0]
-                for marker in ["<<<<<<< SEARCH", "=======", ">>>>>>> REPLACE"]
-            ):
-                path = strip_filename(lines[0])
-
+            # Use the path from the exception if available, don't try to parse it from the error message
+            path = getattr(exc, 'path', None)
+            
             failed = [
                 {
                     "path": path,
@@ -492,7 +488,16 @@ class EditBlockCoder(Coder):
                     "- If the problem persists, please report this as a potential bug.",
                 ],
             })
-            block_message.extend(error_details["how_to_fix"])
+            
+            # Copy the how_to_fix list so we don't modify the ERROR_TYPE_DETAILS constant
+            how_to_fix = list(error_details["how_to_fix"])
+            
+            # Add specific fence format information for parse errors
+            if error_type == "parse_error":
+                fence_example = f"{self.fence[0]}python ... {self.fence[1]}"
+                how_to_fix.append(f"- Use the correct fence format for this project: {fence_example}")
+                
+            block_message.extend(how_to_fix)
 
             messages.append("\n\n".join(block_message))
 
