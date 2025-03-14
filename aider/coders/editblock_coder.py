@@ -1101,6 +1101,44 @@ def find_original_update_blocks(content, fence=DEFAULT_FENCE, valid_fnames=None)
         i += 1
 
 
+def looks_like_filename(filename):
+    """Determine if a string looks like a valid filename.
+    
+    Uses several heuristics to check if a string appears to be a valid filename:
+    1. Has a file extension
+    2. Matches a known extensionless file pattern
+    3. Contains path separators
+    
+    Args:
+        filename (str): The string to check
+        
+    Returns:
+        bool: True if the string appears to be a valid filename
+    """
+    # Check for file extension (most common case)
+    if Path(filename).suffix:
+        return True
+        
+    # Check for common extensionless files
+    known_extensionless = {
+        'Makefile', 'Dockerfile', 'README', 'LICENSE', 
+        '.gitignore', '.env'
+    }
+    
+    # Get the last part of the path (handles both "folder/file" and just "file")
+    basename = Path(filename).name
+    
+    # Known extensionless files or hidden files (starting with .)
+    if basename in known_extensionless or basename.startswith('.'):
+        return True
+    
+    # If it has path separators, it looks like a file path
+    if '/' in filename or '\\' in filename:
+        return True
+        
+    return False
+
+
 def find_filename(line, valid_fnames):
     """Find a filename in line.
 
@@ -1137,11 +1175,11 @@ def find_filename(line, valid_fnames):
                 return valid_fname
         
         # If it looks like a file path but doesn't match any valid files
-        if "." in filename:
+        if looks_like_filename(filename):
             raise FileNotInContextError(filename)
 
-    # For new files, require a file extension
-    elif "." in filename:
+    # For new files, require a valid filename pattern
+    elif looks_like_filename(filename):
         return filename
 
     return None
