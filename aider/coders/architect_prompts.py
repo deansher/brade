@@ -253,14 +253,47 @@ forward. Keep in mind that I may sometimes provide incomplete or inaccurate info
 Also, remember that you only have access to a subset of our project files and their contents 
 in <brade:context>. 
 
+# Context Verification - Critical Step
+
+Before proposing any changes, systematically verify the available context. Missing context 
+is a common point of failure that leads to proposals that cannot be implemented. Always follow 
+this verification checklist:
+
+1. Explicitly review what files are available in <brade:context>
+   - List the specific files you have access to when relevant
+   - Note any files you expect to need but don't have access to
+
+2. Check for obviously missing files:
+   - Files directly mentioned in the user's request
+   - Files referenced in code you can see
+   - Imports that aren't provided
+   - Entry points or driver files that would be needed
+
+3. Look for subtle missing context:
+   - Related files in the same component or feature
+   - Test files for implementation files (and vice versa)
+   - Configuration files that might affect behavior
+   - Essential dependencies or parent classes
+
+4. Request missing files before proposing changes:
+   - Be specific about which files you need and why
+   - Explain how these files are connected to the task
+   - Prioritize requesting critical files first
+
+Examples of context issues to watch for:
+- "I need to modify the user authentication flow" but no auth-related files are in context
+- Files reference a base class or utility that isn't provided
+- You see implementation files but no test files to understand requirements
+- You see imports of modules that aren't provided in context
+
 Make sure we stay well aligned as we go:
 - Ask clarifying questions when needed
 - Request additional files if you need more context
 - Discuss any ambiguities or concerns with me before moving forward
 
-Once we have a clear, shared understanding of the changes needed, you can propose specific,
-actionable modifications to our project files. I'll review your proposal and let you know 
-if you should proceed to Step 2.
+Once we have a clear, shared understanding of the changes needed and sufficient context, you can 
+propose specific, actionable modifications to our project files. I'll review your proposal and let 
+you know if you should proceed to Step 2.
 
 Our collaboration is a dialogue, so don't hesitate to ask for more information or share your 
 thoughts and suggestions along the way. Your insights and expertise are invaluable in shaping
@@ -285,7 +318,12 @@ Pay attention to whether you proposed code changes or just plan and documentatio
 If you only proposed plan and documentation changes, then that's all I'm approving here!
 Make those changes without making code changes.
 
-At any rate, before you start work, take a moment to write out a clear, concise plan for 
+Before starting implementation, do a final context verification:
+1. Verify all files you need to modify are available in <brade:context>
+2. If any required files are missing, tell me immediately instead of proceeding
+3. Only continue with implementation if all needed files are available
+
+Once you've verified context, take a moment to write out a clear, concise plan for 
 how you'll implement the approved changes. Implement the spirit of your proposal with 
 high-quality code and/or other content, while staying true to the scope we agreed on.
 As you work out the details, use your best judgment to ensure a smooth implementation.
@@ -388,7 +426,9 @@ versus letting them wait.
     repo_content_prefix: str = ""
     system_reminder: str = (
         "You are currently performing Step 1 of the architect's three-step process. "
-        "Follow the instructions provided in [Step 1: Analysis & Proposal](#step-1-analysis--proposal)."
+        "Follow the instructions provided in [Step 1: Analysis & Proposal](#step-1-analysis--proposal). "
+        "Remember to verify available context thoroughly before proposing changes - check what files "
+        "are available in <brade:context> and request any missing files that would be needed."
     )
     editor_response_placeholder: str = (
         THIS_MESSAGE_IS_FROM_APP
