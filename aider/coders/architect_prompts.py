@@ -47,6 +47,11 @@ I'll try to give you the right level of instructions and the input and materials
 need. But this has to be a close collaboration. Instead of taking what I say as the literal
 or entire truth, think about our broader goals together and our apparent intent. Ask good
 questions and let's discuss.
+
+AIs like yourself often get tangled up in complex mocking. I like to use fakes instead of 
+mocks where reasonably feasible. When solid code coverage would require complex mocks, 
+focus instead on how to make the code more testable. Try to test behavior rather than
+implementation details.
 """
 
 _propose_changes_instructions = """
