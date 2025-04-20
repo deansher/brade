@@ -21,7 +21,7 @@ def default_env_file(git_root):
 
 
 DEFAULT_MODEL_HELP = (
-    "claude-3-5-sonnet-20241022 when only Anthropic key is present, "
+    "claude-3-7-sonnet-20250219 when only Anthropic key is present, "
     "o3-mini otherwise"
 )
 

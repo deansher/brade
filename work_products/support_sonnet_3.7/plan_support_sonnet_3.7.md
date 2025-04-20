@@ -48,16 +48,16 @@ We use simple, textual checkboxes at each level of task, both for tasks represen
 - (✔︎) Handle disabled case cleanly (return {}).  
 - (✔︎) Set max_tokens = 60000 to avoid context limit errors with large prompts.
 
-## ( ) Default Model Selection
+## (✔︎) Default Model Selection
 
-### ( ) Implement Selection Logic
-- ( ) Make Sonnet 3.7 Sonnet the default Anthropic model when only ANTHROPIC_API_KEY is present.  
-- ( ) Keep "o1" as fallback default if OPENAI_API_KEY or multiple keys exist.  
-- ( ) Allow users to override with --model as usual.
+### (✔︎) Implement Selection Logic
+- (✔︎) Make Sonnet 3.7 Sonnet the default Anthropic model when only ANTHROPIC_API_KEY is present.  
+- (✔︎) Keep "o1" as fallback default if OPENAI_API_KEY or multiple keys exist.  
+- (✔︎) Allow users to override with --model as usual.
 
-### ( ) Ensure Configuration Consistency
-- ( ) Confirm all references and prompts match the 3.7 default model name.  
-- ( ) Double-check multi-model behavior with 3.7 as the new default.
+### (✔︎) Ensure Configuration Consistency
+- (✔︎) Confirm all references and prompts match the 3.7 default model name.  
+- (✔︎) Double-check multi-model behavior with 3.7 as the new default.
 
 ## ( ) Extended Thinking Integration
 

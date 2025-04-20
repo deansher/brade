@@ -521,7 +521,7 @@ class TestCommands(TestCase):
             from aider.coders import Coder
 
             coder = Coder.create(
-                _ModelConfigImpl("claude-3-5-sonnet-20240620"), None, io
+                _ModelConfigImpl("anthropic/claude-3-7-sonnet-20250219"), None, io
             )
             print(coder.get_announcements())
             commands = Commands(io, coder)

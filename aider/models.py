@@ -322,7 +322,7 @@ class _ModelConfigImpl(ModelConfig):
         if "gpt-3.5" in model or "gpt-4" in model:
             self.reminder = "sys"
 
-        if "claude-3.5" in model or "claude-3-5" in model:
+        if "claude-3.5" in model or "claude-3-5" in model or "claude-3.7" in model or "claude-3-7" in model:
             self.edit_format = "diff"
             self.use_repo_map = True
             self.reminder = None
