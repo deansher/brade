@@ -3,6 +3,7 @@ from difflib import SequenceMatcher, unified_diff
 import math
 import re
 import sys
+from aider.brade_prompts import PROJECT_CONTEXT_SECTION
 import diff_match_patch
 from pathlib import Path
 
@@ -351,10 +352,12 @@ class EditBlockCoder(Coder):
         if not self.applied_changes:
             return "No changes were applied"
 
-        response = ["Here are all the changes that were successfully applied:\n"]
-        
+        response = ["I made the changes described by the following SEARCH/REPLACE blocks.\n"
+                    "These changes should be reflected in the latest versions of our\n"
+                    f"project files, which are provided in ${PROJECT_CONTEXT_SECTION}.\n\n"]
+
         # Group changes by file
-        changes_by_file = {}
+        changes_by_file: dict[str, list[dict]] = {}
         for change in self.applied_changes:
             path = change["path"]
             if path not in changes_by_file:
@@ -365,13 +368,13 @@ class EditBlockCoder(Coder):
         for path, changes in changes_by_file.items():
             for change in changes:
                 response.extend([
-                    f"\n{path}",
-                    f"{self.fence[0]}python",
-                    "<<<<<<< SEARCH",
+                    f"\n{path}\n",
+                    f"{self.fence[0]}python\n",
+                    "<<<<<<< SEARCH\n",
                     change["original"],
-                    "=======",
+                    "\n=======\n",
                     change["updated"],
-                    ">>>>>>> REPLACE",
+                    "\n>>>>>>> REPLACE\n",
                     f"{self.fence[1]}\n",
                 ])
 
