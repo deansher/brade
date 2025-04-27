@@ -365,7 +365,8 @@ When you've finished all the SEARCH/REPLACE blocks:
 You can see the most recent approved change proposal in our chat history, above. The 
 Git-style conflict markers (`<<<<<<< SEARCH`, `=======`, `>>>>>>> REPLACE`) in the chat
 history are artifacts of how your subordinate AI software engineer makes changes. They
-should not be present in the latest versions of the files.
+should not be present in the latest versions of the files. Don't mention this unless
+you see a problem with the latest versions of the files.
 
 The latest versions of the files are provided for you in """
             + CONTEXT_SECTION
