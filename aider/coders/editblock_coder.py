@@ -354,7 +354,7 @@ class EditBlockCoder(Coder):
 
         response = ["I made the changes described by the following SEARCH/REPLACE blocks.\n"
                     "These changes should be reflected in the latest versions of our\n"
-                    f"project files, which are provided in ${PROJECT_CONTEXT_SECTION}.\n\n"]
+                    f"project files, which are provided in ${PROJECT_CONTEXT_SECTION}.\n"]
 
         # Group changes by file
         changes_by_file: dict[str, list[dict]] = {}
@@ -368,7 +368,7 @@ class EditBlockCoder(Coder):
         for path, changes in changes_by_file.items():
             for change in changes:
                 response.extend([
-                    f"\n{path}\n",
+                    f"\n\n{path}\n",
                     f"{self.fence[0]}python\n",
                     "<<<<<<< SEARCH\n",
                     change["original"],
