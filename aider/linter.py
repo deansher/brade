@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from grep_ast import TreeContext, filename_to_lang
-from tree_sitter_languages import get_parser  # noqa: E402
+from tree_sitter_language_pack import get_parser  # noqa: E402
 
 from aider.dump import dump  # noqa: F401
 
@@ -214,7 +214,7 @@ def basic_lint(fname, code):
         return
 
     try:
-        parser = get_parser(lang)
+        parser = get_parser(language_name=lang)
     except Exception as err:
         print(f"Unable to load parser: {err}")
         return

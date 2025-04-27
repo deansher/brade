@@ -37,22 +37,22 @@ class TestModels(unittest.TestCase):
         model = _ModelConfigImpl("gpt-4-0613")
         self.assertEqual(model.info["max_input_tokens"], 8 * 1024)
 
-        # o3-mini and o1 share the same 200k token context window
-        model = _ModelConfigImpl("o3-mini")
+        # o4-mini and o3 share the same 200k token context window
+        model = _ModelConfigImpl("o4-mini")
         self.assertEqual(model.info["max_input_tokens"], 200000)
 
-        # Test o3-mini model settings
-        model = _ModelConfigImpl("o3-mini")
+        # Test o4-mini model settings
+        model = _ModelConfigImpl("o4-mini")
         self.assertTrue(model.is_reasoning_model)
         self.assertEqual(model.edit_format, "whole")
         self.assertEqual(model.weak_model_name, "gpt-4o")
-        self.assertEqual(model.editor_model_name, "o3-mini")
+        self.assertEqual(model.editor_model_name, "o4-mini")
         self.assertEqual(model.editor_edit_format, "editor-diff")
 
     def test_model_class_selection(self):
         """Test that get_model_config returns the correct implementation class."""
         # Test reasoning model gets _OpenAiReasoningConfigImpl
-        model = get_model_config("o3-mini")
+        model = get_model_config("o4-mini")
         self.assertIsInstance(model, _OpenAiReasoningModelConfig)
 
         # Test non-reasoning model gets _ModelConfigImpl
@@ -74,7 +74,7 @@ class TestModels(unittest.TestCase):
         self.assertEqual(model.map_reasoning_level_to_config(1), ReasoningConfig(is_reasoning_enabled=False, model_params={}))
 
         # Test OpenAI reasoning model returns correct mappings
-        model = get_model_config("o3-mini")  # Using o3-mini as an example OpenAI reasoning model
+        model = get_model_config("o4-mini")  # Using o4-mini as an example OpenAI reasoning model
 
         # Test default reasoning level (0)
         self.assertEqual(model.map_reasoning_level_to_config(0), ReasoningConfig(is_reasoning_enabled=True, model_params={"reasoning_effort": "medium"}))
@@ -123,9 +123,9 @@ class TestModels(unittest.TestCase):
         self.assertEqual(model.name, "gpt-4")
 
         # Test _OpenAiReasoningConfigImpl creation
-        model = get_model_config("o3-mini")
+        model = get_model_config("o4-mini")
         self.assertIsInstance(model, _OpenAiReasoningModelConfig)
-        self.assertEqual(model.name, "o3-mini")
+        self.assertEqual(model.name, "o4-mini")
 
         # Test model with weak model
         model = get_model_config("gpt-4", weak_model="gpt-3.5-turbo")
@@ -187,8 +187,8 @@ class TestModels(unittest.TestCase):
             any("bogus-model" in msg for msg in warning_messages)
         )  # Check that one of the warnings mentions the bogus model
 
-        # Test o3-mini with bogus editor
-        main_model = _ModelConfigImpl("o3-mini")
+        # Test o4-mini with bogus editor
+        main_model = _ModelConfigImpl("o4-mini")
         main_model.editor_model = _ModelConfigImpl("bogus-model")
 
         result = sanity_check_models(mock_io, main_model)

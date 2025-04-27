@@ -61,34 +61,35 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(eb.strip_filename(""), "")
         self.assertEqual(eb.strip_filename("  "), "")
 
-    def test_find_filename(self):
+    def test_find_filepath(self):
         # Test with valid_fnames provided
         valid_fnames = ["file1.py", "dir/file2.py", "path/to/file3.py"]
 
         # Test exact matches
-        self.assertEqual(eb.find_filename("file1.py", valid_fnames), "file1.py")
-        self.assertEqual(eb.find_filename("dir/file2.py", valid_fnames), "dir/file2.py")
+        self.assertEqual(eb.find_filepath("file1.py", valid_fnames), "file1.py")
+        self.assertEqual(eb.find_filepath("dir/file2.py", valid_fnames), "dir/file2.py")
 
         # Test basename matches
-        self.assertEqual(eb.find_filename("file2.py", valid_fnames), "dir/file2.py")
-        self.assertEqual(eb.find_filename("file3.py", valid_fnames), "path/to/file3.py")
+        self.assertEqual(eb.find_filepath("file2.py", valid_fnames), "dir/file2.py")
+        self.assertEqual(eb.find_filepath("file3.py", valid_fnames), "path/to/file3.py")
 
         # Test with strippable characters
-        self.assertEqual(eb.find_filename("#file1.py:", valid_fnames), "file1.py")
+        self.assertEqual(eb.find_filepath("#file1.py:", valid_fnames), "file1.py")
         self.assertEqual(
-            eb.find_filename("`dir/file2.py`", valid_fnames), "dir/file2.py"
+            eb.find_filepath("`dir/file2.py`", valid_fnames), "dir/file2.py"
         )
 
         # Test no matches
-        self.assertIsNone(eb.find_filename("nonexistent.py", valid_fnames))
-        self.assertIsNone(eb.find_filename("", valid_fnames))
+        with self.assertRaises(eb.FileNotInContextError):
+            eb.find_filepath("nonexistent.py", valid_fnames)
+        self.assertIsNone(eb.find_filepath("", valid_fnames))
 
         # Test without valid_fnames
-        self.assertEqual(eb.find_filename("newfile.py", None), "newfile.py")
+        self.assertEqual(eb.find_filepath("newfile.py", None), "newfile.py")
         self.assertEqual(
-            eb.find_filename("path/to/newfile.py", None), "path/to/newfile.py"
+            eb.find_filepath("path/to/newfile.py", None), "path/to/newfile.py"
         )
-        self.assertIsNone(eb.find_filename("invalid", None))  # No extension
+        self.assertIsNone(eb.find_filepath("invalid", None))  # No extension
 
     def test_strip_quoted_wrapping(self):
         input_text = "filename.ext\n```\nWe just want this content\nNot the filename and triple quotes\n```"

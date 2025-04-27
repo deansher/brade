@@ -91,6 +91,7 @@ claude-3-5-haiku-20241024
 claude-3-sonnet-20240229
 claude-3-5-sonnet-20240620
 claude-3-5-sonnet-20241022
+claude-3-7-sonnet-20250219
 """
 
 ANTHROPIC_MODELS = [ln.strip() for ln in ANTHROPIC_MODELS.splitlines() if ln.strip()]
@@ -1117,10 +1118,10 @@ MODEL_SETTINGS = [
         editor_edit_format="editor-diff",
     ),
     ModelSettings(
-        "openai/o1",
+        "openai/o3",
         "diff",
-        weak_model_name="openai/gpt-4o-mini",
-        editor_model_name="openai/gpt-4o",
+        weak_model_name="openai/gpt-4o",
+        editor_model_name="openai/o3",
         editor_edit_format="editor-diff",
         use_repo_map=True,
         reminder="user",
@@ -1131,10 +1132,10 @@ MODEL_SETTINGS = [
         model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
-        "azure/o1",
+        "azure/o3",
         "diff",
-        weak_model_name="azure/gpt-4o-mini",
-        editor_model_name="azure/gpt-4o",
+        weak_model_name="azure/gpt-4o",
+        editor_model_name="azure/o3",
         editor_edit_format="editor-diff",
         use_repo_map=True,
         reminder="user",
@@ -1145,10 +1146,10 @@ MODEL_SETTINGS = [
         model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
-        "o3-mini",
+        "o4-mini",
         "whole",
         weak_model_name="gpt-4o",
-        editor_model_name="o3-mini",
+        editor_model_name="o4-mini",
         editor_edit_format="editor-diff",
         use_repo_map=True,
         reminder="user",
@@ -1159,10 +1160,10 @@ MODEL_SETTINGS = [
         model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
-        "o1",
+        "o3",
         "architect",
         weak_model_name="gpt-4o",
-        editor_model_name="gpt-4o",
+        editor_model_name="o3",
         editor_edit_format="editor-diff",
         use_repo_map=True,
         reminder="user",
@@ -1173,10 +1174,10 @@ MODEL_SETTINGS = [
         model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
-        "openai/o3-mini",
+        "openai/o4-mini",
         "whole",
         weak_model_name="openai/gpt-4o",
-        editor_model_name="openai/o3-mini",
+        editor_model_name="openai/o4-mini",
         editor_edit_format="editor-diff",
         use_repo_map=True,
         reminder="user",
@@ -1187,10 +1188,10 @@ MODEL_SETTINGS = [
         model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
-        "azure/o3-mini",
+        "azure/o4-mini",
         "whole",
         weak_model_name="azure/gpt-4o",
-        editor_model_name="azure/o3-mini",
+        editor_model_name="azure/o4-mini",
         editor_edit_format="editor-diff",
         use_repo_map=True,
         reminder="user",
@@ -1201,7 +1202,7 @@ MODEL_SETTINGS = [
         model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
-        "o1",
+        "o3",
         "architect",
         weak_model_name="gpt-4o",
         editor_model_name="gpt-4o",
@@ -1215,7 +1216,7 @@ MODEL_SETTINGS = [
         model_config_class=_OpenAiReasoningModelConfig,
     ),
     ModelSettings(
-        "openrouter/openai/o1-mini",
+        "openrouter/openai/o4-mini",
         "whole",
         weak_model_name="openrouter/openai/gpt-4o-mini",
         editor_model_name="openrouter/openai/gpt-4o",
@@ -1228,10 +1229,10 @@ MODEL_SETTINGS = [
         is_reasoning_model=True,
     ),
     ModelSettings(
-        "openrouter/openai/o1-preview",
+        "openrouter/openai/o3",
         "diff",
-        weak_model_name="openrouter/openai/gpt-4o-mini",
-        editor_model_name="openrouter/openai/gpt-4o",
+        weak_model_name="openrouter/openai/gpt-4o",
+        editor_model_name="openrouter/openai/o3",
         editor_edit_format="editor-diff",
         use_repo_map=True,
         reminder="user",

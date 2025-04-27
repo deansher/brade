@@ -362,7 +362,10 @@ When you've finished all the SEARCH/REPLACE blocks:
 - The approved change proposal was implemented fully, correctly, and well.
 - The latest project files are now in a solid working state.
 
-You can see the most recent approved change proposal in our chat history, above.
+You can see the most recent approved change proposal in our chat history, above. The 
+Git-style conflict markers (`<<<<<<< SEARCH`, `=======`, `>>>>>>> REPLACE`) in the chat
+history are artifacts of how your subordinate AI software engineer makes changes. They
+should not be present in the latest versions of the files.
 
 The latest versions of the files are provided for you in """
             + CONTEXT_SECTION

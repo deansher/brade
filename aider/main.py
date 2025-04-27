@@ -400,7 +400,7 @@ def sanity_check_repo(repo, io):
 # Help text for this logic is in DEFAULT_MODEL_HELP
 DEFAULT_MODEL_HELP = (
     "claude-3-7-sonnet-20250219 when only Anthropic key is present, "
-    "o3-mini otherwise"
+    "o4-mini otherwise"
 )
 
 
@@ -694,8 +694,8 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
             )
             args.model = "anthropic/claude-3-7-sonnet-20250219"
         else:
-            logger.debug("Using o1 as default model")
-            args.model = "o1"
+            logger.debug("Using o3 as default model (OpenAI or both credentials available)")
+            args.model = "o3"
     
     main_model = models.get_model_config(
         args.model,

@@ -1,11 +1,11 @@
-# Enhance Repomap – Updated Plan for o3-mini Support and Message Transformation
+# Enhance Repomap – Updated Plan for o4-mini Support and Message Transformation
 
-This document outlines our progress and remaining work toward enhancing Brade to support the o3-mini model and its associated message conversion.
+This document outlines our progress and remaining work toward enhancing Brade to support the o4-mini model and its associated message conversion.
 
 ## Critical Constraints (unchanged)
 
 1. litellm does not yet support "developer" messages  
-2. o3-mini no longer supports "system" messages  
+2. o4-mini no longer supports "system" messages  
 3. We must handle this conflict by:
    - Continuing to use "system" messages in our own code  
    - Converting them to simple "user" messages at the lowest level in sendchat.py  
@@ -14,15 +14,15 @@ This document outlines our progress and remaining work toward enhancing Brade to
 4. We will revisit this design after litellm adds support for "developer" messages  
 
 ## Summary  
-- The core tasks for adding o3-mini support and the simpler message transformation have been completed.  
-- The default model selection logic now sets o3-mini as the primary default if OPENAI_API_KEY is present and uses Claude when only ANTHROPIC_API_KEY exists.  
+- The core tasks for adding o4-mini support and the simpler message transformation have been completed.  
+- The default model selection logic now sets o4-mini as the primary default if OPENAI_API_KEY is present and uses Claude when only ANTHROPIC_API_KEY exists.  
 - Integration testing of API key combinations along with live model testing remain as essential items for further validation.  
 - Additional refined integration tests and live validations will be moved to a future work section.
 
 ## Critical Constraints
 
 1. litellm does not yet support "developer" messages
-2. o3-mini no longer supports "system" messages
+2. o4-mini no longer supports "system" messages
 3. We must handle this conflict by:
    - Continuing to use "system" messages in our own code
    - Converting them to simple "user" messages at the lowest level, in sendchat.py
@@ -32,9 +32,9 @@ This document outlines our progress and remaining work toward enhancing Brade to
 
 ## Requirements
 
-OpenAI has released a new model, o3-mini. We need to add support for this model to the Brade application. We will add support for the o3-mini model in a way that is consistent with our existing support for other models.
+OpenAI has released a new model, o4-mini. We need to add support for this model to the Brade application. We will add support for the o4-mini model in a way that is consistent with our existing support for other models.
 
-As our MVP, we'll use o3-mini as the default model in all cases except when only ANTHROPIC_API_KEY exists. This means:
+As our MVP, we'll use o4-mini as the default model in all cases except when only ANTHROPIC_API_KEY exists. This means:
 - o1 is the default model, even when no API keys are present (supporting use with OpenAI proxies)
 - Claude 3.5 Sonnet is only used when ANTHROPIC_API_KEY exists but OPENAI_API_KEY does not
 
@@ -42,30 +42,30 @@ OpenAI's documentation states:
 
 > Developer messages are the new system messages: Starting with o1-2024-12-17, reasoning models support developer messages rather than system messages, to align with the chain of command behavior described in the model spec.
 
-Due to the Critical Constraints above, we will still support "system" messages in all of our code above a certain lowest level. At that low-level point, we will convert them as needed for the target model. We already do a conversion for Anthropic messages in `transform_messages_for_anthropic` in sendchat.py. We will add an analogous conversion for o3-mini messages.
+Due to the Critical Constraints above, we will still support "system" messages in all of our code above a certain lowest level. At that low-level point, we will convert them as needed for the target model. We already do a conversion for Anthropic messages in `transform_messages_for_anthropic` in sendchat.py. We will add an analogous conversion for o4-mini messages.
 
 We won't change our own coding abstractions yet. Before doing that, we'll see what direction litellm's API goes with this.
 
 ## Tasks
 
-### (✔︎) Add o3-mini Model Support
+### (✔︎) Add o4-mini Model Support
 
 #### Requirements
 
-1. Add o3-mini model configuration to models.py
-2. Configure o3-mini as a reasoning model
+1. Add o4-mini model configuration to models.py
+2. Configure o4-mini as a reasoning model
 3. Set appropriate defaults for the model
 4. Ensure proper test coverage
 
 #### Implementation Steps
 
-- (✔︎) Add o3-mini model settings
+- (✔︎) Add o4-mini model settings
   - (✔︎) Configure as reasoning model
   - (✔︎) Set appropriate edit format
   - (✔︎) Configure default models for weak/editor roles
   - (✔︎) Set other model-specific parameters
 
-- (✔︎) Add tests for o3-mini configuration
+- (✔︎) Add tests for o4-mini configuration
   - (✔︎) Test model settings
   - (✔︎) Test default configurations
 
@@ -91,7 +91,7 @@ We won't change our own coding abstractions yet. Before doing that, we'll see wh
 #### Implementation Steps
 
 - (✔︎) Add message transformation function
-  - (✔︎) Create transform_messages_for_o3 in sendchat.py
+  - (✔︎) Create transform_messages_for_o4 in sendchat.py
   - (✔︎) Implement simple system-to-user conversion
   - (✔︎) Preserve message order
 
@@ -104,7 +104,7 @@ We won't change our own coding abstractions yet. Before doing that, we'll see wh
 
 #### Requirements
 
-1. Set o3-mini as the primary default model:
+1. Set o4-mini as the primary default model:
    - Use for all roles in ArchitectCoder (primary, editor, reviewer)
    - Use as default for all other use cases
    - Use o1 whenever OPENAI_API_KEY is present
@@ -123,11 +123,11 @@ We won't change our own coding abstractions yet. Before doing that, we'll see wh
 - (✔︎) Update default model selection in main.py
   - (✔︎) Add clear comments explaining the default model strategy
   - (✔︎) Implement API key availability checks
-  - (✔︎) Set o1 as primary default
+  - (✔︎) Set o4-mini as primary default
   - (✔︎) Configure Claude 3.5 Sonnet fallback
 
 - (✔︎) Verify model settings in models.py
-  - (✔︎) Confirm o3-mini is properly configured for all roles
+  - (✔︎) Confirm o4-mini is properly configured for all roles
   - (✔︎) Validate edit formats for each role
   - (✔︎) Test model settings
 
@@ -141,7 +141,7 @@ We won't change our own coding abstractions yet. Before doing that, we'll see wh
 #### Requirements
 
 1. Ensure all tests pass
-2. Verify changes work with o3-mini model
+2. Verify changes work with o4-mini model
 3. Confirm compatibility with existing models
 4. Document any known limitations
 
@@ -149,10 +149,10 @@ We won't change our own coding abstractions yet. Before doing that, we'll see wh
 
 - (✔︎) Run existing test suite
 - (✔︎) Add integration tests
-- (✔︎) Test with live o3-mini model
+- (✔︎) Test with live o4-mini model
 - ( ) Document findings and limitations
 
-## Switch from o3-mini to o1
+## Switch from o4-mini to o1
 
 #### Requirements
 

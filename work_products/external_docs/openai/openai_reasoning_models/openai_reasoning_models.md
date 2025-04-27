@@ -6,9 +6,9 @@ Copy page
 
 Explore advanced reasoning and problem-solving models.
 
-**Reasoning models**, like OpenAI o1 and o3-mini, are new large language models trained with reinforcement learning to perform complex reasoning. Reasoning models [think before they answer](https://openai.com/index/introducing-openai-o1-preview/), producing a long internal chain of thought before responding to the user. Reasoning models excel in complex problem solving, coding, scientific reasoning, and multi-step planning for agentic workflows.
+**Reasoning models**, like OpenAI o1 and o4-mini, are new large language models trained with reinforcement learning to perform complex reasoning. Reasoning models [think before they answer](https://openai.com/index/introducing-openai-o1-preview/), producing a long internal chain of thought before responding to the user. Reasoning models excel in complex problem solving, coding, scientific reasoning, and multi-step planning for agentic workflows.
 
-As with our GPT models, we provide both a smaller, faster model ( `o3-mini`) that is less expensive per token, and a larger model ( `o1`) that is somewhat slower and more expensive, but can often generate better responses for complex tasks, and generalize better across domains.
+As with our GPT models, we provide both a smaller, faster model ( `o4-mini`) that is less expensive per token, and a larger model ( `o1`) that is somewhat slower and more expensive, but can often generate better responses for complex tasks, and generalize better across domains.
 
 ## Quickstart
 
@@ -49,7 +49,7 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
 `;
 
 const completion = await openai.chat.completions.create({
-  model: "o3-mini",
+  model: "o4-mini",
   reasoning_effort: "medium",
   messages: [\
     {\
@@ -93,7 +93,7 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
 """
 
 response = client.chat.completions.create(
-    model="o3-mini",
+    model="o4-mini",
     reasoning_effort="medium",
     messages=[\
         {\
@@ -124,7 +124,7 @@ curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "o3-mini",
+    "model": "o4-mini",
     "reasoning_effort": "medium",
     "messages": [\
       {\
@@ -298,7 +298,7 @@ export default function BookList() {
 `.trim();
 
 const completion = await openai.chat.completions.create({
-  model: "o3-mini",
+  model: "o4-mini",
   messages: [\
     {\
       role: "user",\
@@ -393,7 +393,7 @@ export default function BookList() {
 """
 
 response = client.chat.completions.create(
-    model="o3-mini",
+    model="o4-mini",
     messages=[\
         {\
             "role": "user",\
@@ -458,7 +458,7 @@ your reasoning at the beginning and end, not throughout the code.
 `.trim();
 
 const completion = await openai.chat.completions.create({
-  model: "o3-mini",
+  model: "o4-mini",
   messages: [\
     {\
       role: "user",\
@@ -517,7 +517,7 @@ your reasoning at the beginning and end, not throughout the code.
 """
 
 response = client.chat.completions.create(
-    model="o3-mini",
+    model="o4-mini",
     messages=[\
         {\
             "role": "user",\
@@ -574,7 +574,7 @@ them?
 `;
 
 const completion = await openai.chat.completions.create({
-  model: "o3-mini",
+  model: "o4-mini",
   messages: [\
     {\
       role: "user",\
@@ -618,7 +618,7 @@ them?
 """
 
 response = client.chat.completions.create(
-    model="o3-mini",
+    model="o4-mini",
     messages=[\
         {\
             "role": "user",\

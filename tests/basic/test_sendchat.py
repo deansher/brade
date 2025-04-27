@@ -323,7 +323,7 @@ class TestAnalyzeChatSituation(unittest.TestCase):
     @patch("litellm.completion")
     def test_send_completion_no_temperature(self, mock_completion):
         # Create a model that doesn't support temperature
-        model = get_model_config("o3-mini")
+        model = get_model_config("o4-mini")
         self.assertFalse(model.use_temperature)
 
         # Set up mock response
@@ -421,7 +421,7 @@ class TestAnalyzeChatSituation(unittest.TestCase):
         mock_completion.return_value = mock_response
 
         # Create reasoning model with extra params
-        model = _OpenAiReasoningModelConfig("o3-mini")
+        model = _OpenAiReasoningModelConfig("o4-mini")
         model.extra_params = {"reasoning_effort": "low"}
 
         # Call with extra params that should NOT override reasoning level
@@ -495,7 +495,7 @@ class TestAnalyzeChatSituation(unittest.TestCase):
     def test_send_completion_reasoning_parameter_precedence(self, mock_completion):
         """Test that reasoning_level takes precedence over other reasoning parameters."""
         # Create reasoning model with extra params
-        model = _OpenAiReasoningModelConfig("o3-mini")
+        model = _OpenAiReasoningModelConfig("o4-mini")
         model.extra_params = {"reasoning_effort": "low"}
 
         # Call with extra params that should NOT override reasoning level

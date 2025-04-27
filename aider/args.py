@@ -22,7 +22,7 @@ def default_env_file(git_root):
 
 DEFAULT_MODEL_HELP = (
     "claude-3-7-sonnet-20250219 when only Anthropic key is present, "
-    "o3-mini otherwise"
+    "o3 otherwise"
 )
 
 
@@ -124,21 +124,21 @@ def get_parser(default_config_files, git_root):
         const=deepseek_model,
         help=f"Use {deepseek_model} model for the main chat",
     )
-    o1_mini_model = "o1-mini"
+    o4_mini_model = "o4-mini"
     group.add_argument(
-        "--o1-mini",
+        "--o4-mini",
         action="store_const",
         dest="model",
-        const=o1_mini_model,
-        help=f"Use {o1_mini_model} model for the main chat",
+        const=o4_mini_model,
+        help=f"Use {o4_mini_model} model for the main chat",
     )
-    o1_preview_model = "o1-preview"
+    o3_model = "o3"
     group.add_argument(
-        "--o1-preview",
+        "--o3",
         action="store_const",
         dest="model",
-        const=o1_preview_model,
-        help=f"Use {o1_preview_model} model for the main chat",
+        const=o3_model,
+        help=f"Use {o3_model} model for the main chat",
     )
 
     ##########
