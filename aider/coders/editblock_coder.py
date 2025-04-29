@@ -415,10 +415,17 @@ class EditBlockCoder(Coder):
         Returns:
             str: A formatted markdown error message
         """
+        maybe_all_failed = "All " if len(passed) == 0 else ""
+        failed_plural = "" if len(failed) == 1 else "s"
+        passed_plural_was = " was" if len(passed) == 1 else "s were"
         messages = [
-            f"# {len(failed)} SEARCH/REPLACE block(s) failed to match!",
+            f"{maybe_all_failed}{len(failed)} SEARCH/REPLACE block{failed_plural} failed!",
             "",
-            f"The other {len(passed)} block(s) were applied successfully. Do not resubmit those.",
+            "Study the error details below to understand what went wrong. Consider any",
+            "provided suggestions. Produce additional SEARCH/REPLACE blocks to correctly",
+            "make the failed change{failed_plural}.",
+            "",
+            f"The other {len(passed)} block{passed_plural_was} applied successfully. Do not resubmit.",
             "",
         ]
 

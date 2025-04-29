@@ -342,6 +342,7 @@ Step 3: Create a checklist of the specific changes needed. For each change, incl
 
 Step 4: Make the changes by writing SEARCH/REPLACE blocks to specify all of your edits.
 The Brade application will apply your SEARCH/REPLACE blocks to the project files.
+Carefully follow the documented SEARCH/REPLACE Block Format.
 
 Step 5: Stop without adding any further comments to me. 
 - You'll have an opportunity to walk me through your thought process later.

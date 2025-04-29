@@ -2132,7 +2132,7 @@ class Coder:
 
             err = err.args[0]
 
-            self.io.tool_error("The LLM did not conform to the edit format.")
+            self.io.tool_error("You did not correctly follow the edit format.")
             self.io.tool_output(urls.edit_errors)
             self.io.tool_output()
             self.io.tool_output(str(err))
