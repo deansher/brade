@@ -317,10 +317,12 @@ our project's direction and implementation.
         """Get the prompt for approved non-plan changes."""
         return """I like your proposal. Implement it as follows.
 
-Pay attention to whether you proposed making changes to code or production content,
-or just changes to plans and documentation. If you only proposed plan and documentation
-changes, then that's all I'm approving here! Don't continue beyond them.
-
+Implement the full scope of your proposal, but no further. For example, if you only proposed
+changing plans, then only change plans. If you proposed to make certain code changes, then 
+only make those changes. (Intelligently follow the spirit of this rule. For example, if your
+proposal didn't cover additional code changes that are necessary for a correct implementation,
+then do include those changes.)
+        
 Carry out the following steps to implement your proposed changes:
 
 Step 1: Make sure you have all of the files you need in <brade:context>.
