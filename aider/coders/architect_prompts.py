@@ -315,33 +315,33 @@ our project's direction and implementation.
 
     def get_approved_non_plan_changes_prompt(self) -> str:
         """Get the prompt for approved non-plan changes."""
-        return """I've approved the changes you proposed in your last message. Now it's 
-time to implement your proposal by using SEARCH/REPLACE blocks to create or modify the relevant 
-project files.
+        return """I like your proposal. Implement it as follows.
 
-Pay attention to whether you proposed code changes or just plan and documentation changes.
-If you only proposed plan and documentation changes, then that's all I'm approving here!
-Make those changes without making code changes.
+Pay attention to whether you proposed making changes to code or production content,
+or just changes to plans and documentation. If you only proposed plan and documentation
+changes, then that's all I'm approving here! Don't continue beyond them.
 
-Before starting implementation, do a final context verification:
-1. Verify all files you need to modify are available in <brade:context>
-2. If any required files are missing, tell me immediately instead of proceeding
-3. Only continue with implementation if all needed files are available
+Carry out the following steps to implement your proposed changes:
 
-Once you've verified context, take a moment to write out a clear, concise plan for 
+Step 1: Make sure you have all of the files you need in <brade:context>.
+a. Verify that <brade:context> contains all of the files you need to modify.
+b. Verify that it contains all files you need to as reference to fully and correctly implement the changes.
+c. If any required files are missing, tell me immediately instead of proceeding
+d. Only continue with implementation if all needed files are available
+
+Step 2: Take a moment to write out a clear, concise plan for 
 how you'll implement the approved changes. Implement the spirit of your proposal with 
 high-quality code and/or other content, while staying true to the scope we agreed on.
 As you work out the details, use your best judgment to ensure a smooth implementation.
 
-Once you have your plan, create a checklist of the specific changes needed. For each change,
-include:
+Step 3: Create a checklist of the specific changes needed. For each change, include:
 - The complete relative path to the file 
 - A brief description of the modification
 
-Then, write a SEARCH/REPLACE block for each item on your checklist.
+Step 4: Make the changes by writing SEARCH/REPLACE blocks to specify all of your edits.
+The Brade application will apply your SEARCH/REPLACE blocks to the project files.
 
-When you've finished all the SEARCH/REPLACE blocks:
-- Stop right there, without adding any further comments to me. 
+Step 5: Stop without adding any further comments to me. 
 - You'll have an opportunity to walk me through your thought process later.
 - Wait for the changes to be applied.
 """

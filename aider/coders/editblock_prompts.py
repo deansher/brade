@@ -133,37 +133,7 @@ For each change you want to make to a project file, you must provide a *SEARCH/R
 The SEARCH block must match existing content exactly, line-by-line, except in the special case
 of creating a new file. The REPLACE block must contain your new or revised content.
 
- Every SEARCH/REPLACE block must strictly follow this format:
-
- 1. **File Path**
-    - Must be the full, relative file path (from project root) on a line by itself immediately *above* the opening fence.
-    - No extra characters (quotes, asterisks, etc.) are allowed.
-
- 2. **Code Fence**
-    - Use the provided fence format exactly (e.g. `{fence[0]}python` to start and `{fence[1]}` to end).
-    - The fence format may be triple backticks (```) or another format like <source>
-    - The language specifier (e.g. "python") should match the target file's extension.
-
- 3. **SEARCH Block**
-    - Begins with a line exactly reading `<<<<<<< SEARCH`.
-    - For existing files, the SEARCH block must match the current file content *exactly* (including whitespace, comments, and indentation).
-    - For new files, leave the SEARCH block empty.
-
- 4. **Divider**
-    - A single line exactly reading `=======` separates the SEARCH and REPLACE sections.
-
- 5. **REPLACE Block**
-    - Contains the new content that will replace the matched text.
-    - Ends with a line exactly reading `>>>>>>> REPLACE`.
-
- # Important Soft Guidelines
-
- - **Minimal Context:** Use just enough surrounding context (about 5-10 lines) to accurately identify the target text.
- - **Isolated Changes:** Each block should focus on a single logical change; avoid mixing unrelated changes.
- - **Preserve Format:** Do not alter indentation, remove comments, or change spacing unless it's part of the intended edit.
- - **Exact Matching:** The SEARCH part must be a verbatim copy of whole lines of the existing file content.
-
-## Example 1
+## SEARCH/REPLACE Block Example 1
 
 utils/echo.py
 {fence[0]}python
@@ -179,6 +149,38 @@ def echo(msg):
     print("Echo: " + msg)
 >>>>>>> REPLACE
 {fence[1]}
+
+
+## SEARCH/REPLACE Block Formatting Rules
+
+ Every SEARCH/REPLACE block must contain exactly the following elements in order:
+
+ 1. **File Path**
+    - Provide the full, relative file path (from project root) on a line by itself.
+    - Use no formatting or punctuation.
+
+ 2. **Opening Code Fence** 
+    A single line reading `{fence[0]}language`, where "language" is the language of the file.
+
+ 3. **SEARCH Block**
+    - A single line exactly reading `<<<<<<< SEARCH`
+    - For existing files, the SEARCH block must match the current file content *exactly* (including whitespace, comments, and indentation).
+    - It must match exactly one location in the file. Include enough surrounding context to make the match unique.
+    - For new files, leave the SEARCH block empty.
+
+ 4. **Divider**
+    - A single line exactly reading `=======`.
+
+ 5. **REPLACE Block**
+    - Contains the new content that will replace the matched text.
+    - Ends with a line exactly reading `>>>>>>> REPLACE`.
+
+## Important Soft Guidelines
+
+ - **Minimal Context:** Use just enough surrounding context (about 5-10 lines) to accurately identify the target text.
+ - **Isolated Changes:** Each block should focus on a single logical change; avoid mixing unrelated changes.
+ - **Preserve Format:** Do not alter indentation, remove comments, or change spacing unless it's part of the intended edit.
+ - **Exact Matching:** The SEARCH part must be a verbatim copy of whole lines of the existing file content.
 
 ## Special Cases
 
@@ -200,7 +202,7 @@ def echo(msg):
      1. Delete from original location
      2. Insert at new location
 
-## Example 2
+## SEARCH/REPLACE Block Example 2
 
 To make this change we need to modify `main.py` and make a new file
 `hello.py`:
