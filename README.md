@@ -1,9 +1,9 @@
 
 <!-- Edit README.md, not index.md -->
 
-# Brade is deansher's personal fork of Aider.
+# Brade was deansher's personal fork of Aider.
 
-I intend to stay very close to the upstream project, but I want to make some changes to suit my needs.
+In the spirit of the singularity, it was extremely useful until I switched to Cursor, and then Claude Code, then back to Brade with o3, then Cursor with Gemini 2.5 Pro, then OpenHands with Claude 4 Sonnet and Opus.
 
 This project and the programming assistant that it implements are named after a young, smart, angry, 
 female villain in a young adult science fiction book series called Skyward, which are among my favorite books.
